@@ -1,13 +1,12 @@
 package com.feliiks.gardons.controllers;
 
 import com.feliiks.gardons.entities.User;
+import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -20,18 +19,16 @@ public class UserController {
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.findAll();
-        return ResponseEntity.status(200).body(users);
-    }
-
-    @PostMapping(produces = "application/json")
-    public ResponseEntity<User> saveNewUser(@RequestBody User newUser) {
-        return userService.register(newUser);
+        return ResponseEntity.status(200).body(userService.findAll());
     }
 
     @GetMapping(path="/{id}", produces = "application/json")
-    @PreAuthorize("hasRole('USER')")
-    public Optional<User> getUserById(@PathVariable("id") Long id) {
-        return userService.findById(id);
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) throws BusinessException {
+        return ResponseEntity.status(200).body(userService.findById(id));
+    }
+
+    @PostMapping(produces = "application/json")
+    public ResponseEntity<User> saveNewUser(@RequestBody User newUser) throws BusinessException {
+        return ResponseEntity.status(201).body(userService.register(newUser));
     }
 }
