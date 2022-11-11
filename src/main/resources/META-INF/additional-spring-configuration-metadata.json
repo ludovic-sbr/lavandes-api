@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "gardons.jwtSecret",
+      "type": "java.lang.String",
+      "description": "Description for gardons.jwtSecret."
+  }
+] }

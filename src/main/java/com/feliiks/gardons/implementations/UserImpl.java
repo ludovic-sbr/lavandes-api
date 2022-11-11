@@ -1,28 +1,30 @@
 package com.feliiks.gardons.implementations;
 
+import com.feliiks.gardons.entities.Role;
+import com.feliiks.gardons.entities.Token;
 import com.feliiks.gardons.entities.User;
+import com.feliiks.gardons.exceptions.BusinessException;
+import com.feliiks.gardons.repositories.RoleRepository;
 import com.feliiks.gardons.repositories.UserRepository;
 import com.feliiks.gardons.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.http.HttpStatus.*;
-
 @Service
 public class UserImpl implements UserService {
     public final UserRepository userRepository;
+    public final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserImpl(UserRepository userRepository) {
+    public UserImpl(
+            UserRepository userRepository,
+            RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -32,41 +34,36 @@ public class UserImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        Optional<User> user;
+    public User findById(Long id) throws BusinessException {
+        String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", id);
 
-        try {
-            user = userRepository.findById(id);
-            if (user.isEmpty()) throw new ResponseStatusException(NOT_FOUND);
-        } catch (ResponseStatusException err) {
-            String errorMessage = String.format("Une erreur est survenue lors de la récupération de l'utilisateur '%s'.", id);
-            throw new ResponseStatusException(NOT_FOUND, errorMessage);
+        return userRepository.findById(id).orElseThrow(() -> new BusinessException(errorMessage));
+    }
+
+    @Override
+    public User findByEmail(String email) throws BusinessException {
+        String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", email);
+
+        return userRepository.findByEmail(email).orElseThrow(() -> new BusinessException(errorMessage));
+    }
+
+    @Override
+    public User register(User user) throws BusinessException {
+        User existingUser = findByEmail(user.getEmail());
+
+        if (existingUser != null) {
+            String errorMessage = String.format("L'utilisateur '%s' existe déjà.", user.getEmail());
+
+            throw new BusinessException(errorMessage);
         }
+
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
+        Optional<Role> role = roleRepository.findById(1L);
+        role.ifPresent(user::setRole);
+
+        userRepository.save(user);
 
         return user;
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public ResponseEntity<User> register(User user) {
-        try {
-            User existingUser = findByEmail(user.getEmail());
-
-            if (existingUser != null) {
-                throw new ResponseStatusException(BAD_REQUEST);
-            }
-
-            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-
-            userRepository.save(user);
-
-            return ResponseEntity.status(201).body(user);
-        } catch (ResponseStatusException err) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 }

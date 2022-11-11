@@ -1,5 +1,7 @@
 package com.feliiks.gardons.entities;
 
+import org.springframework.boot.context.properties.bind.DefaultValue;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -10,29 +12,39 @@ public class User {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+
     @Column(nullable = false)
     private String firstname;
+
     @Column(nullable = false)
     private String lastname;
+
     @Email
     @Column(nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String password;
+
     @Column(nullable = false)
     private String tel;
+
+    @ManyToOne
+    @JoinColumn(name="role_id")
+    private Role role;
 
     public User() {
         super();
     }
 
-    public User(String firstname, String lastname, String email, String password, String tel) {
+    public User(String firstname, String lastname, String email, String password, String tel, Role role) {
         super();
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.tel = tel;
+        this.role = role;
     }
 
     public Long getId() {
@@ -81,6 +93,14 @@ public class User {
 
     public String getTel() {
         return tel;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
