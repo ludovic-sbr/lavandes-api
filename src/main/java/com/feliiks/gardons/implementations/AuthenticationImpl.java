@@ -28,6 +28,8 @@ public class AuthenticationImpl implements AuthenticationService {
         try {
             User user = userService.findByEmail(email);
 
+            // check du mot de passe
+
             return tokenService.generateTokenForUser(user);
         } catch (BusinessException err) {
             String errorMessage = String.format("Identifiant ou mot de passe incorrect pour l'utilisateur '%s'.", email);

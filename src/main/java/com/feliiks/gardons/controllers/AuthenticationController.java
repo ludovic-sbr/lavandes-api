@@ -1,14 +1,15 @@
 package com.feliiks.gardons.controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.feliiks.gardons.entities.Token;
 import com.feliiks.gardons.exceptions.AuthenticationException;
-import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.AuthenticationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
 
@@ -22,9 +23,9 @@ public class AuthenticationController {
     }
 
     @PostMapping(produces = "application/json")
-    public ResponseEntity<Token> authenticateUser(@RequestBody Map<String, Object> credentials) throws AuthenticationException {
-        String username = (String) credentials.get("email");
-        String password = (String) credentials.get("password");
+    public ResponseEntity<Token> authenticateUser(@RequestBody ObjectNode credentials) throws AuthenticationException {
+        String username = credentials.get("username").asText();
+        String password = credentials.get("password").asText();
 
         return ResponseEntity.status(200).body(authenticationService.authenticate(username, password));
     }
