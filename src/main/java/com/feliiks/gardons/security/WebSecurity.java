@@ -43,6 +43,7 @@ public class WebSecurity implements WebMvcConfigurer {
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests((requests) ->
                 requests
+                    .antMatchers("/user/me").authenticated()
                     .anyRequest().permitAll()
             )
             .exceptionHandling()
