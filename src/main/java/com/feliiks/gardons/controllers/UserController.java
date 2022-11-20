@@ -4,9 +4,12 @@ import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.UserService;
 import com.feliiks.gardons.viewmodels.*;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
+import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +22,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+
     @GetMapping(produces = "application/json")
     public ResponseEntity<GetUsersResponse> getAllUsers() {
         List<User> users = userService.findAll();
@@ -28,14 +36,17 @@ public class UserController {
 
     @GetMapping(path="/me", produces = "application/json")
     public ResponseEntity<GetUserResponse> getMyself() throws BusinessException {
-        Optional<User> user = userService.findById(26L);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (user.isEmpty()) {
-            String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", 26L);
+        if (authentication.getPrincipal() == null) {
+            String errorMessage = "Aucun utilisateur authentifié trouvé.";
             throw new BusinessException(errorMessage);
         }
 
-        return ResponseEntity.status(200).body(new GetUserResponse(user.get()));
+        User user = (User) authentication.getPrincipal();
+        User mappedUser = new ModelMapper().map(user, User.class);
+
+        return ResponseEntity.status(200).body(new GetUserResponse(mappedUser));
     }
 
     @GetMapping(path="/{id}", produces = "application/json")
