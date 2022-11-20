@@ -1,12 +1,14 @@
 package com.feliiks.gardons.implementations;
 
 import com.feliiks.gardons.entities.Role;
-import com.feliiks.gardons.entities.Token;
 import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.RoleRepository;
 import com.feliiks.gardons.repositories.UserRepository;
 import com.feliiks.gardons.services.UserService;
+import com.feliiks.gardons.viewmodels.PatchUserRequest;
+import com.feliiks.gardons.viewmodels.RegisterUserRequest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,36 +36,58 @@ public class UserImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) throws BusinessException {
-        String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", id);
-
-        return userRepository.findById(id).orElseThrow(() -> new BusinessException(errorMessage));
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
     @Override
-    public User findByEmail(String email) throws BusinessException {
-        String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", email);
-
-        return userRepository.findByEmail(email).orElseThrow(() -> new BusinessException(errorMessage));
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
-    public User register(User user) throws BusinessException {
-        User existingUser = findByEmail(user.getEmail());
+    public User register(RegisterUserRequest registerUserRequest) throws BusinessException {
+        Optional<User> existingUser = findByEmail(registerUserRequest.getEmail());
 
-        if (existingUser != null) {
-            String errorMessage = String.format("L'utilisateur '%s' existe déjà.", user.getEmail());
+        if (existingUser.isPresent()) {
+            String errorMessage = String.format("L'utilisateur '%s' existe déjà.", registerUserRequest.getEmail());
 
             throw new BusinessException(errorMessage);
         }
 
-        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        User newUser = new User();
+        newUser.setFirstname(registerUserRequest.getFirstname());
+        newUser.setLastname(registerUserRequest.getLastname());
+        newUser.setEmail(registerUserRequest.getEmail());
+        newUser.setTel(registerUserRequest.getTel());
+
+        newUser.setPassword(this.passwordEncoder.encode(registerUserRequest.getPassword()));
 
         Optional<Role> role = roleRepository.findById(1L);
-        role.ifPresent(user::setRole);
+        role.ifPresent(newUser::setRole);
 
-        userRepository.save(user);
+        userRepository.save(newUser);
 
-        return user;
+        return newUser;
+    }
+
+    @Override
+    public User editUser(PatchUserRequest patchUserRequest) throws BusinessException {
+        Optional<User> user = userRepository.findById(22L);
+        if (user.isEmpty()) return null;
+        return user.get();
+    }
+
+    @Override
+    public Optional<User> deleteById(Long id) {
+        try {
+            Optional<User> user = userRepository.findById(id);
+
+            userRepository.deleteById(id);
+
+            return user;
+        } catch (EmptyResultDataAccessException err) {
+            return Optional.empty();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.feliiks.gardons.implementations;
 
+import com.feliiks.gardons.entities.Reservation;
 import com.feliiks.gardons.entities.Role;
 import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.repositories.RoleRepository;

@@ -1,5 +1,6 @@
 package com.feliiks.gardons.implementations;
 
+import com.feliiks.gardons.entities.Location;
 import com.feliiks.gardons.entities.Reservation;
 import com.feliiks.gardons.repositories.ReservationRepository;
 import com.feliiks.gardons.services.ReservationService;

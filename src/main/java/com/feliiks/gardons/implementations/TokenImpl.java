@@ -20,20 +20,23 @@ public class TokenImpl implements TokenService {
 
     public static final Integer TOKEN_VALIDITY = 24 * HOURS;
 
-    @Value("${gardons.jwtSecret}")
-    private static String jwtSecret = "sqdsd";
+    @Value("${app.jwtSecret}")
+    private String jwtSecret;
+
+    @Value("${app.jwtIssuer}")
+    private String issuer;
 
     public TokenImpl() { }
 
     @Override
-    public Token createTokenForUser(User user, Integer validity) {
+    public Token createTokenFromUser(User user, Integer validity) {
         Date expirationDate = new Date(new Timestamp(System.currentTimeMillis()).getTime() + TOKEN_VALIDITY * 1000);
 
         String tokenValue = Jwts.builder()
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(expirationDate)
-                .setIssuer(user.getEmail())
+                .setIssuer(issuer)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
 
@@ -45,7 +48,7 @@ public class TokenImpl implements TokenService {
 
         if (user == null) return null;
 
-        return createTokenForUser(user, TOKEN_VALIDITY);
+        return createTokenFromUser(user, TOKEN_VALIDITY);
     }
 
     @Override
