@@ -1,6 +1,5 @@
 package com.feliiks.gardons.config;
 
-import com.feliiks.gardons.entities.Token;
 import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.entities.Location;
 import com.feliiks.gardons.entities.Reservation;

@@ -7,9 +7,14 @@ import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.AuthenticationService;
 import com.feliiks.gardons.services.TokenService;
 import com.feliiks.gardons.services.UserService;
+import com.feliiks.gardons.viewmodels.LoginUserRequest;
+import com.feliiks.gardons.viewmodels.LoginUserResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class AuthenticationImpl implements AuthenticationService {
@@ -24,17 +29,28 @@ public class AuthenticationImpl implements AuthenticationService {
     }
 
     @Override
-    public Token authenticate(String email, String password) throws AuthenticationException {
+    public Token authenticate(LoginUserRequest loginUserRequest) throws AuthenticationException {
         try {
-            User user = userService.findByEmail(email);
+            Optional<User> user = userService.findByEmail(loginUserRequest.getEmail());
 
-            // check du mot de passe
+            if (user.isEmpty()) {
+                String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", loginUserRequest.getEmail());
 
-            return tokenService.generateTokenForUser(user);
+                throw new BusinessException(errorMessage);
+            }
+
+            boolean encodedPassword = this.passwordEncoder.matches(loginUserRequest.getPassword(), user.get().getPassword());
+            if (!encodedPassword) {
+                String errorMessage = String.format("Identifiant ou mot de passe incorrect pour l'utilisateur '%s'.", loginUserRequest.getEmail());
+
+                throw new BusinessException(errorMessage);
+            }
+
+            return tokenService.generateTokenForUser(user.get());
         } catch (BusinessException err) {
-            String errorMessage = String.format("Identifiant ou mot de passe incorrect pour l'utilisateur '%s'.", email);
+            String errorMessage = String.format("Identifiant ou mot de passe incorrect pour l'utilisateur '%s'.", loginUserRequest.getEmail());
 
-            throw new AuthenticationException(errorMessage);
+            throw new AuthenticationException(errorMessage, err);
         }
     }
 }

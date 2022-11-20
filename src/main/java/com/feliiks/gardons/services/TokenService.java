@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface TokenService {
-    Token createTokenForUser(User user, Integer validity);
+    Token createTokenFromUser(User user, Integer validity);
     Token generateTokenForUser(User user);
     String getUsernameFromToken(String token) throws TokenValidationException;
 }

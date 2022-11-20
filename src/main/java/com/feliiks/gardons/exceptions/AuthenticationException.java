@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class AuthenticationException extends Exception {
 
+    public AuthenticationException() { }
+
     public AuthenticationException(String message) {
         super(message);
     }
