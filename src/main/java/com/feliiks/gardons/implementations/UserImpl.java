@@ -3,11 +3,11 @@ package com.feliiks.gardons.implementations;
 import com.feliiks.gardons.entities.Role;
 import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.exceptions.BusinessException;
-import com.feliiks.gardons.repositories.RoleRepository;
 import com.feliiks.gardons.repositories.UserRepository;
+import com.feliiks.gardons.services.RoleService;
 import com.feliiks.gardons.services.UserService;
 import com.feliiks.gardons.viewmodels.PatchUserRequest;
-import com.feliiks.gardons.viewmodels.RegisterUserRequest;
+import com.feliiks.gardons.viewmodels.PostUserRequest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,15 +19,15 @@ import java.util.Optional;
 @Service
 public class UserImpl implements UserService {
     public final UserRepository userRepository;
-    public final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
     public UserImpl(
             UserRepository userRepository,
-            RoleRepository roleRepository) {
+            RoleService roleService) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.roleService = roleService;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class UserImpl implements UserService {
     }
 
     @Override
-    public User register(RegisterUserRequest registerUserRequest) throws BusinessException {
+    public User register(PostUserRequest registerUserRequest) throws BusinessException {
         Optional<User> existingUser = findByEmail(registerUserRequest.getEmail());
 
         if (existingUser.isPresent()) {
@@ -63,7 +63,7 @@ public class UserImpl implements UserService {
 
         newUser.setPassword(this.passwordEncoder.encode(registerUserRequest.getPassword()));
 
-        Optional<Role> role = roleRepository.findById(1L);
+        Optional<Role> role = roleService.findById(1L);
         role.ifPresent(newUser::setRole);
 
         userRepository.save(newUser);
@@ -73,9 +73,51 @@ public class UserImpl implements UserService {
 
     @Override
     public User editUser(PatchUserRequest patchUserRequest) throws BusinessException {
-        Optional<User> user = userRepository.findById(22L);
-        if (user.isEmpty()) return null;
-        return user.get();
+        Optional<User> user = this.findById(patchUserRequest.getId());
+
+        if (user.isEmpty()) {
+            String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", patchUserRequest.getId());
+
+            throw new BusinessException(errorMessage);
+        }
+
+        if (patchUserRequest.getFirstname() != null) {
+            user.get().setFirstname(patchUserRequest.getFirstname());
+        }
+
+        if (patchUserRequest.getLastname() != null) {
+            user.get().setLastname(patchUserRequest.getLastname());
+        }
+
+        if (patchUserRequest.getEmail() != null) {
+            Optional<User> existingUser = findByEmail(patchUserRequest.getEmail());
+
+            if (existingUser.isPresent()) {
+                String errorMessage = String.format("L'adresse email '%s' n'est pas disponible.", patchUserRequest.getEmail());
+
+                throw new BusinessException(errorMessage);
+            }
+
+            user.get().setEmail(patchUserRequest.getEmail());
+        }
+
+        if (patchUserRequest.getTel() != null) {
+            user.get().setTel(patchUserRequest.getTel());
+        }
+
+        if (patchUserRequest.getRoleName() != null) {
+            Optional<Role> role = roleService.findByName(patchUserRequest.getRoleName());
+
+            if (role.isEmpty()) {
+                String errorMessage = String.format("Le rôle '%s' n'existe pas.", patchUserRequest.getRoleName());
+
+                throw new BusinessException(errorMessage);
+            }
+
+            user.get().setRole(role.get());
+        }
+
+        return userRepository.save(user.get());
     }
 
     @Override

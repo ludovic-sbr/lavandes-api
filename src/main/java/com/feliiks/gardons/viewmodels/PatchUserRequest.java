@@ -1,14 +1,14 @@
 package com.feliiks.gardons.viewmodels;
 
-import com.feliiks.gardons.entities.Role;
 import lombok.Data;
 
 @Data
 public class PatchUserRequest {
+    Long id;
     String firstname;
     String lastname;
     String email;
     String password;
     String tel;
-    Role role;
+    String roleName;
 }

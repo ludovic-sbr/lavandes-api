@@ -11,7 +11,8 @@ public class Token {
 
     private String value;
 
-    public Token() { }
+    public Token() {
+    }
 
     public Token(Long userId, String username, Date validity, String value) {
         this.userId = userId;

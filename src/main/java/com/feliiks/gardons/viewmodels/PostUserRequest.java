@@ -3,7 +3,7 @@ package com.feliiks.gardons.viewmodels;
 import lombok.Data;
 
 @Data
-public class RegisterUserRequest {
+public class PostUserRequest {
     String firstname;
     String lastname;
     String email;
