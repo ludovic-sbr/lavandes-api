@@ -9,8 +9,12 @@ import java.util.Optional;
 @Service
 public interface RoleService {
     List<Role> findAll();
+
     Optional<Role> findById(Long id);
+
     Optional<Role> findByName(String name);
+
     Role save(Role role);
+
     void addRoleToUser(Long id, String roleName);
 }

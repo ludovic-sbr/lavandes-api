@@ -9,5 +9,6 @@ import java.util.Optional;
 @Service
 public interface ReservationService {
     List<Reservation> findAll();
+
     Optional<Reservation> findById(Long id);
 }

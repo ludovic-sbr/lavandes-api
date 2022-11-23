@@ -38,21 +38,21 @@ public class WebSecurity implements WebMvcConfigurer {
         JwtAuthenticationFilter jwtAuthenticationFilter =
                 new JwtAuthenticationFilter(tokenService, userService);
         http
-            .cors()
-            .and()
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests((requests) ->
-                requests
-                    .antMatchers("/user/me").authenticated()
-                    .anyRequest().permitAll()
-            )
-            .exceptionHandling()
-            .authenticationEntryPoint(authenticationEntryPoint)
-            .accessDeniedHandler(accessDeniedHandler)
-            .and()
-            .sessionManagement(sessionManagement ->
-                    sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .csrf().disable();
+                .cors()
+                .and()
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests((requests) ->
+                        requests
+                                .antMatchers("/user/me").authenticated()
+                                .anyRequest().permitAll()
+                )
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler)
+                .and()
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf().disable();
         return http.build();
     }
 }

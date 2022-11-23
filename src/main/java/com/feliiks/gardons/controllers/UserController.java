@@ -4,12 +4,13 @@ import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.UserService;
 import com.feliiks.gardons.viewmodels.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.modelmapper.ModelMapper;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,7 @@ public class UserController {
         return ResponseEntity.status(200).body(new GetUsersResponse(users));
     }
 
-    @GetMapping(path="/me", produces = "application/json")
+    @GetMapping(path = "/me", produces = "application/json")
     public ResponseEntity<GetUserResponse> getMyself() throws BusinessException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -49,7 +50,7 @@ public class UserController {
         return ResponseEntity.status(200).body(new GetUserResponse(mappedUser));
     }
 
-    @GetMapping(path="/{id}", produces = "application/json")
+    @GetMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<GetUserResponse> getUserById(@PathVariable("id") Long id) throws BusinessException {
         Optional<User> user = userService.findById(id);
 
@@ -62,20 +63,20 @@ public class UserController {
     }
 
     @PostMapping(produces = "application/json")
-    public ResponseEntity<RegisterUserResponse> saveNewUser(@RequestBody RegisterUserRequest registerUserRequest) throws BusinessException {
-        User user = userService.register(registerUserRequest);
+    public ResponseEntity<PostUserResponse> saveNewUser(@RequestBody PostUserRequest postUserRequest) throws BusinessException {
+        User user = userService.register(postUserRequest);
 
-        return ResponseEntity.status(201).body(new RegisterUserResponse(user));
+        return ResponseEntity.status(201).body(new PostUserResponse(user));
     }
 
-    @PatchMapping(path="/{id}", produces = "application/json")
+    @PatchMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<PatchUserResponse> editUser(@RequestBody PatchUserRequest patchUserRequest) throws BusinessException {
         User user = userService.editUser(patchUserRequest);
 
         return ResponseEntity.status(200).body(new PatchUserResponse(user));
     }
 
-    @DeleteMapping(path="/{id}", produces = "application/json")
+    @DeleteMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<DeleteUserResponse> deleteUser(@PathVariable("id") Long id) throws BusinessException {
         Optional<User> user = userService.deleteById(id);
 

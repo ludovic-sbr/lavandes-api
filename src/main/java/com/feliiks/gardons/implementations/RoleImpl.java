@@ -1,13 +1,10 @@
 package com.feliiks.gardons.implementations;
 
-import com.feliiks.gardons.entities.Reservation;
 import com.feliiks.gardons.entities.Role;
 import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.repositories.RoleRepository;
 import com.feliiks.gardons.repositories.UserRepository;
 import com.feliiks.gardons.services.RoleService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,32 +32,12 @@ public class RoleImpl implements RoleService {
 
     @Override
     public Optional<Role> findById(Long id) {
-        Optional<Role> role;
-
-        try {
-            role = roleRepository.findById(id);
-            if (role.isEmpty()) throw new ResponseStatusException(NOT_FOUND);
-        } catch (ResponseStatusException err) {
-            String errorMessage = String.format("Une erreur est survenue lors de la récupération du rôle '%s'.", id);
-            throw new ResponseStatusException(NOT_FOUND, errorMessage);
-        }
-
-        return role;
+        return roleRepository.findById(id);
     }
 
     @Override
     public Optional<Role> findByName(String name) {
-        Optional<Role> role;
-
-        try {
-            role = roleRepository.findByName(name);
-            if (role.isEmpty()) throw new ResponseStatusException(NOT_FOUND);
-        } catch (ResponseStatusException err) {
-            String errorMessage = String.format("Une erreur est survenue lors de la récupération du rôle '%s'.", name);
-            throw new ResponseStatusException(NOT_FOUND, errorMessage);
-        }
-
-        return role;
+        return roleRepository.findByName(name);
     }
 
     @Override

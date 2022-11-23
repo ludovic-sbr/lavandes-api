@@ -3,12 +3,11 @@ package com.feliiks.gardons.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name="locations")
+@Table(name = "locations")
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String type;
     private String description;
     private boolean parking;
     private boolean kitchen;
@@ -22,13 +21,13 @@ public class Location {
     private int max_persons;
     private int price_per_night;
     private int bedrooms;
+    private boolean available;
 
     public Location() {
         super();
     }
 
-    public Location(String type, String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms) {
-        this.type = type;
+    public Location(String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms, boolean available) {
         this.description = description;
         this.parking = parking;
         this.kitchen = kitchen;
@@ -42,6 +41,7 @@ public class Location {
         this.max_persons = max_persons;
         this.price_per_night = price_per_night;
         this.bedrooms = bedrooms;
+        this.available = available;
     }
 
     public Long getId() {
@@ -50,14 +50,6 @@ public class Location {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getDescription() {
@@ -164,11 +156,18 @@ public class Location {
         this.bedrooms = bedrooms;
     }
 
+    public boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
     @Override
     public String toString() {
         return "Location{" +
                 "id=" + id +
-                ", type='" + type + '\'' +
                 ", description='" + description + '\'' +
                 ", parking=" + parking +
                 ", kitchen=" + kitchen +
@@ -182,6 +181,7 @@ public class Location {
                 ", max_persons=" + max_persons +
                 ", price_per_night=" + price_per_night +
                 ", bedrooms=" + bedrooms +
+                ", available=" + available +
                 '}';
     }
 }

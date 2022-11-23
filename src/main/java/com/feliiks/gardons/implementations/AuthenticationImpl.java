@@ -8,12 +8,10 @@ import com.feliiks.gardons.services.AuthenticationService;
 import com.feliiks.gardons.services.TokenService;
 import com.feliiks.gardons.services.UserService;
 import com.feliiks.gardons.viewmodels.LoginUserRequest;
-import com.feliiks.gardons.viewmodels.LoginUserResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

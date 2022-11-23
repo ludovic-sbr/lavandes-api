@@ -4,12 +4,13 @@ import com.feliiks.gardons.entities.Token;
 import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.exceptions.TokenValidationException;
 import com.feliiks.gardons.services.TokenService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import io.jsonwebtoken.*;
 
-import java.util.Date;
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Service
 public class TokenImpl implements TokenService {
@@ -26,7 +27,8 @@ public class TokenImpl implements TokenService {
     @Value("${app.jwtIssuer}")
     private String issuer;
 
-    public TokenImpl() { }
+    public TokenImpl() {
+    }
 
     @Override
     public Token createTokenFromUser(User user, Integer validity) {
