@@ -3,17 +3,17 @@ package com.feliiks.gardons.viewmodels;
 import com.feliiks.gardons.entities.User;
 
 public class PostUserResponse {
-    private User registeredUser;
+    private User user;
 
-    public PostUserResponse(User registeredUser) {
-        this.registeredUser = registeredUser;
+    public PostUserResponse(User user) {
+        this.user = user;
     }
 
-    public User getRegisteredUser() {
-        return registeredUser;
+    public User getUser() {
+        return user;
     }
 
-    public void setRegisteredUser(User registeredUser) {
-        this.registeredUser = registeredUser;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

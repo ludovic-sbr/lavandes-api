@@ -22,12 +22,14 @@ public class Reservation {
     private int vehicle_nbr;
     private Date from;
     private Date to;
+    private int total_price;
+    private int night_number;
 
     public Reservation() {
         super();
     }
 
-    public Reservation(User user, Location location, String reservation_key, int adult_nbr, int child_nbr, int animal_nbr, int vehicle_nbr, Date from, Date to) {
+    public Reservation(User user, Location location, String reservation_key, int adult_nbr, int child_nbr, int animal_nbr, int vehicle_nbr, Date from, Date to, int total_price, int night_number) {
         this.user = user;
         this.location = location;
         this.reservation_key = reservation_key;
@@ -37,6 +39,8 @@ public class Reservation {
         this.vehicle_nbr = vehicle_nbr;
         this.from = from;
         this.to = to;
+        this.total_price = total_price;
+        this.night_number = night_number;
     }
 
     public Long getId() {
@@ -119,6 +123,22 @@ public class Reservation {
         this.to = to;
     }
 
+    public int getTotal_price() {
+        return total_price;
+    }
+
+    public void setTotal_price(int total_price) {
+        this.total_price = total_price;
+    }
+
+    public int getNight_number() {
+        return night_number;
+    }
+
+    public void setNight_number(int night_number) {
+        this.night_number = night_number;
+    }
+
     @Override
     public String toString() {
         return "Reservation{" +
@@ -132,6 +152,8 @@ public class Reservation {
                 ", vehicle_nbr=" + vehicle_nbr +
                 ", from=" + from +
                 ", to=" + to +
+                ", night_number=" + night_number +
+                ", total_price=" + total_price +
                 '}';
     }
 }

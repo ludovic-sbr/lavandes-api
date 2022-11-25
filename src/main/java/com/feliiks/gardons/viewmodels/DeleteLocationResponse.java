@@ -3,17 +3,17 @@ package com.feliiks.gardons.viewmodels;
 import com.feliiks.gardons.entities.Location;
 
 public class DeleteLocationResponse {
-    private Location deletedLocation;
+    private Location location;
 
-    public DeleteLocationResponse(Location deletedLocation) {
-        this.deletedLocation = deletedLocation;
+    public DeleteLocationResponse(Location location) {
+        this.location = location;
     }
 
-    public Location getDeletedLocation() {
-        return deletedLocation;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setDeletedLocation(Location deletedLocation) {
-        this.deletedLocation = deletedLocation;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

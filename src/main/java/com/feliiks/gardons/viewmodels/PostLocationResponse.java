@@ -3,17 +3,17 @@ package com.feliiks.gardons.viewmodels;
 import com.feliiks.gardons.entities.Location;
 
 public class PostLocationResponse {
-    private Location registeredLocation;
+    private Location location;
 
-    public PostLocationResponse(Location registeredLocation) {
-        this.registeredLocation = registeredLocation;
+    public PostLocationResponse(Location location) {
+        this.location = location;
     }
 
-    public Location getRegisteredLocation() {
-        return registeredLocation;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setRegisteredLocation(Location registeredLocation) {
-        this.registeredLocation = registeredLocation;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

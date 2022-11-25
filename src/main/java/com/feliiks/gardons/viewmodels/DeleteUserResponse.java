@@ -3,17 +3,17 @@ package com.feliiks.gardons.viewmodels;
 import com.feliiks.gardons.entities.User;
 
 public class DeleteUserResponse {
-    private User deletedUser;
+    private User user;
 
-    public DeleteUserResponse(User deletedUser) {
-        this.deletedUser = deletedUser;
+    public DeleteUserResponse(User user) {
+        this.user = user;
     }
 
-    public User getDeletedUser() {
-        return deletedUser;
+    public User getUser() {
+        return user;
     }
 
-    public void setDeletedUser(User deletedUser) {
-        this.deletedUser = deletedUser;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

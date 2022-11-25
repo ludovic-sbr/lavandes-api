@@ -1,5 +1,6 @@
 package com.feliiks.gardons.implementations;
 
+import com.feliiks.gardons.entities.Reservation;
 import com.feliiks.gardons.entities.Role;
 import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.exceptions.BusinessException;
@@ -46,6 +47,19 @@ public class UserImpl implements UserService {
     }
 
     @Override
+    public List<Reservation> findUserReservations(Long id) throws BusinessException {
+        Optional<User> user = this.findById(id);
+
+        if (user.isEmpty()) {
+            String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", id);
+
+            throw new BusinessException(errorMessage);
+        }
+
+        return userRepository.findUserReservations(user.get());
+    }
+
+    @Override
     public User register(PostUserRequest registerUserRequest) throws BusinessException {
         Optional<User> existingUser = findByEmail(registerUserRequest.getEmail());
 
@@ -72,11 +86,11 @@ public class UserImpl implements UserService {
     }
 
     @Override
-    public User editUser(PatchUserRequest patchUserRequest) throws BusinessException {
-        Optional<User> user = this.findById(patchUserRequest.getId());
+    public User editUser(Long id, PatchUserRequest patchUserRequest) throws BusinessException {
+        Optional<User> user = this.findById(id);
 
         if (user.isEmpty()) {
-            String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", patchUserRequest.getId());
+            String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", id);
 
             throw new BusinessException(errorMessage);
         }

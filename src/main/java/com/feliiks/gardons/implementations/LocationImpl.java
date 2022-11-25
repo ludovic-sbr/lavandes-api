@@ -31,11 +31,16 @@ public class LocationImpl implements LocationService {
     }
 
     @Override
+    public Optional<Location> findBySlotNumber(int slotNumber) {
+        return locationRepository.findBySlotNumber(slotNumber);
+    }
+
+    @Override
     public Location create(PostLocationRequest postLocationRequest) throws BusinessException {
-        Optional<Location> existingLocation = this.findById(2L);
+        Optional<Location> existingLocation = this.findBySlotNumber(postLocationRequest.getSlot_number());
 
         if (existingLocation.isPresent()) {
-            String errorMessage = String.format("La location '%s' existe déjà.", postLocationRequest.getDescription());
+            String errorMessage = String.format("Une location existe déjà pour le numéro d'emplacement '%s'.", postLocationRequest.getSlot_number());
 
             throw new BusinessException(errorMessage);
         }
@@ -54,17 +59,18 @@ public class LocationImpl implements LocationService {
         newLocation.setMax_persons(postLocationRequest.getMax_persons());
         newLocation.setPrice_per_night(postLocationRequest.getPrice_per_night());
         newLocation.setBedrooms(postLocationRequest.getBedrooms());
+        newLocation.setSlot_number(postLocationRequest.getSlot_number());
         newLocation.setAvailable(true);
 
         return locationRepository.save(newLocation);
     }
 
     @Override
-    public Location editLocation(PatchLocationRequest patchLocationRequest) throws BusinessException {
-        Optional<Location> location = this.findById(patchLocationRequest.getId());
+    public Location editLocation(Long id, PatchLocationRequest patchLocationRequest) throws BusinessException {
+        Optional<Location> location = this.findById(id);
 
         if (location.isEmpty()) {
-            String errorMessage = String.format("La location '%s' n'existe pas.", patchLocationRequest.getId());
+            String errorMessage = String.format("La location '%s' n'existe pas.", id);
 
             throw new BusinessException(errorMessage);
         }

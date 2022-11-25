@@ -3,17 +3,17 @@ package com.feliiks.gardons.viewmodels;
 import com.feliiks.gardons.entities.Location;
 
 public class PatchLocationResponse {
-    Location patchedLocation;
+    private Location location;
 
-    public PatchLocationResponse(Location patchedLocation) {
-        this.patchedLocation = patchedLocation;
+    public PatchLocationResponse(Location location) {
+        this.location = location;
     }
 
-    public Location getPatchedUser() {
-        return patchedLocation;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setPatchedUser(Location patchedLocation) {
-        this.patchedLocation = patchedLocation;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }
