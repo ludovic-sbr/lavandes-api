@@ -17,4 +17,5 @@ public class PostLocationRequest {
     int max_persons;
     int price_per_night;
     int bedrooms;
+    int slot_number;
 }

@@ -22,12 +22,13 @@ public class Location {
     private int price_per_night;
     private int bedrooms;
     private boolean available;
+    private int slot_number;
 
     public Location() {
         super();
     }
 
-    public Location(String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms, boolean available) {
+    public Location(String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms, boolean available, int slot_number) {
         this.description = description;
         this.parking = parking;
         this.kitchen = kitchen;
@@ -42,6 +43,7 @@ public class Location {
         this.price_per_night = price_per_night;
         this.bedrooms = bedrooms;
         this.available = available;
+        this.slot_number = slot_number;
     }
 
     public Long getId() {
@@ -164,6 +166,14 @@ public class Location {
         this.available = available;
     }
 
+    public int getSlot_number() {
+        return slot_number;
+    }
+
+    public void setSlot_number(int slot_number) {
+        this.slot_number = slot_number;
+    }
+
     @Override
     public String toString() {
         return "Location{" +
@@ -182,6 +192,7 @@ public class Location {
                 ", price_per_night=" + price_per_night +
                 ", bedrooms=" + bedrooms +
                 ", available=" + available +
+                ", slot_number=" + slot_number +
                 '}';
     }
 }

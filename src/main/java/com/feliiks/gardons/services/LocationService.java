@@ -15,9 +15,11 @@ public interface LocationService {
 
     Optional<Location> findById(Long id);
 
+    Optional<Location> findBySlotNumber(int slotNumber);
+
     Location create(PostLocationRequest postLocationRequest) throws BusinessException;
 
-    Location editLocation(PatchLocationRequest patchLocationRequest) throws BusinessException;
+    Location editLocation(Long id, PatchLocationRequest patchLocationRequest) throws BusinessException;
 
     Optional<Location> deleteById(Long id);
 }

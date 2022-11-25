@@ -3,17 +3,17 @@ package com.feliiks.gardons.viewmodels;
 import com.feliiks.gardons.entities.User;
 
 public class PatchUserResponse {
-    User patchedUser;
+    private User user;
 
-    public PatchUserResponse(User patchedUser) {
-        this.patchedUser = patchedUser;
+    public PatchUserResponse(User user) {
+        this.user = user;
     }
 
-    public User getPatchedUser() {
-        return patchedUser;
+    public User getUser() {
+        return user;
     }
 
-    public void setPatchedUser(User patchedUser) {
-        this.patchedUser = patchedUser;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
