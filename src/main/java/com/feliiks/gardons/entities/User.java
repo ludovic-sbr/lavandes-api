@@ -21,21 +21,24 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Column(nullable = false)
     private String tel;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
+    @Column
+    private String google_id;
 
     public User() {
         super();
     }
 
-    public User(String firstname, String lastname, String email, String password, String tel, Role role) {
+    public User(String firstname, String lastname, String email, String password, String tel, Role role, String google_id) {
         super();
         this.firstname = firstname;
         this.lastname = lastname;
@@ -43,6 +46,7 @@ public class User {
         this.password = password;
         this.tel = tel;
         this.role = role;
+        this.google_id = google_id;
     }
 
     public Long getId() {
@@ -101,6 +105,14 @@ public class User {
         this.role = role;
     }
 
+    public String getGoogle_id() {
+        return google_id;
+    }
+
+    public void setGoogle_id(String google_id) {
+        this.google_id = google_id;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -109,6 +121,7 @@ public class User {
                 ", lastname='" + lastname + '\'' +
                 ", email='" + email + '\'' +
                 ", tel='" + tel + '\'' +
+                ", google_id='" + google_id + '\'' +
                 '}';
     }
 }

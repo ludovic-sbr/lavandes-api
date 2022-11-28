@@ -18,6 +18,8 @@ public interface UserService {
 
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByGoogleId(String googleId);
+
     List<Reservation> findUserReservations(Long id) throws BusinessException;
 
     User register(PostUserRequest registerUserRequest) throws BusinessException;

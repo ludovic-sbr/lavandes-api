@@ -47,6 +47,12 @@ public class UserImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findByGoogleId(String googleId) {
+        return userRepository.findByGoogleId(googleId);
+    }
+
+
+    @Override
     public List<Reservation> findUserReservations(Long id) throws BusinessException {
         Optional<User> user = this.findById(id);
 
@@ -74,8 +80,10 @@ public class UserImpl implements UserService {
         newUser.setLastname(registerUserRequest.getLastname());
         newUser.setEmail(registerUserRequest.getEmail());
         newUser.setTel(registerUserRequest.getTel());
-
-        newUser.setPassword(this.passwordEncoder.encode(registerUserRequest.getPassword()));
+        newUser.setPassword(registerUserRequest.getPassword() != null ?
+                this.passwordEncoder.encode(registerUserRequest.getPassword())
+                : null);
+        newUser.setGoogle_id(registerUserRequest.getGoogleId());
 
         Optional<Role> role = roleService.findById(1L);
         role.ifPresent(newUser::setRole);
