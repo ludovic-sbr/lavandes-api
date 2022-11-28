@@ -9,4 +9,5 @@ public class PostUserRequest {
     String email;
     String password;
     String tel;
+    String googleId;
 }

@@ -29,6 +29,18 @@ public class AuthenticationImpl implements AuthenticationService {
     @Override
     public Token authenticate(LoginUserRequest loginUserRequest) throws AuthenticationException {
         try {
+            if (loginUserRequest.getGoogleId() != null) {
+                Optional<User> user = userService.findByGoogleId(loginUserRequest.getGoogleId());
+
+                if (user.isEmpty()) {
+                    String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", loginUserRequest.getEmail());
+
+                    throw new BusinessException(errorMessage);
+                }
+
+                return tokenService.generateTokenForUser(user.get());
+            }
+
             Optional<User> user = userService.findByEmail(loginUserRequest.getEmail());
 
             if (user.isEmpty()) {
@@ -39,9 +51,7 @@ public class AuthenticationImpl implements AuthenticationService {
 
             boolean encodedPassword = this.passwordEncoder.matches(loginUserRequest.getPassword(), user.get().getPassword());
             if (!encodedPassword) {
-                String errorMessage = String.format("Identifiant ou mot de passe incorrect pour l'utilisateur '%s'.", loginUserRequest.getEmail());
-
-                throw new BusinessException(errorMessage);
+                throw new BusinessException("Les mots de passe ne correspondent pas.");
             }
 
             return tokenService.generateTokenForUser(user.get());
