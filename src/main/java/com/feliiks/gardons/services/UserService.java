@@ -1,10 +1,8 @@
 package com.feliiks.gardons.services;
 
-import com.feliiks.gardons.entities.Reservation;
-import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.exceptions.BusinessException;
-import com.feliiks.gardons.viewmodels.PatchUserRequest;
-import com.feliiks.gardons.viewmodels.PostUserRequest;
+import com.feliiks.gardons.viewmodels.ReservationEntity;
+import com.feliiks.gardons.viewmodels.UserEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,19 +10,19 @@ import java.util.Optional;
 
 @Service
 public interface UserService {
-    List<User> findAll();
+    List<UserEntity> findAll();
 
-    Optional<User> findById(Long id);
+    Optional<UserEntity> findById(Long id);
 
-    Optional<User> findByEmail(String email);
+    Optional<UserEntity> findByEmail(String email);
 
-    Optional<User> findByGoogleId(String googleId);
+    Optional<UserEntity> findByGoogleId(String googleId);
 
-    List<Reservation> findUserReservations(Long id) throws BusinessException;
+    List<ReservationEntity> findUserReservations(Long id) throws BusinessException;
 
-    User register(PostUserRequest registerUserRequest) throws BusinessException;
+    UserEntity register(UserEntity user) throws BusinessException;
 
-    User editUser(Long id, PatchUserRequest patchUserRequest) throws BusinessException;
+    UserEntity editUser(Long id, UserEntity user) throws BusinessException;
 
-    Optional<User> deleteById(Long id);
+    Optional<UserEntity> deleteById(Long id);
 }

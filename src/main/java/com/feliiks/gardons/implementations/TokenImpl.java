@@ -1,8 +1,8 @@
 package com.feliiks.gardons.implementations;
 
-import com.feliiks.gardons.entities.Token;
-import com.feliiks.gardons.entities.User;
+import com.feliiks.gardons.sqlmodels.TokenModel;
 import com.feliiks.gardons.exceptions.TokenValidationException;
+import com.feliiks.gardons.viewmodels.UserEntity;
 import com.feliiks.gardons.services.TokenService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,7 +31,7 @@ public class TokenImpl implements TokenService {
     }
 
     @Override
-    public Token createTokenFromUser(User user, Integer validity) {
+    public TokenModel createTokenFromUser(UserEntity user, Integer validity) {
         Date expirationDate = new Date(new Timestamp(System.currentTimeMillis()).getTime() + TOKEN_VALIDITY * 1000);
 
         String tokenValue = Jwts.builder()
@@ -42,11 +42,11 @@ public class TokenImpl implements TokenService {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
 
-        return new Token(user.getId(), user.getEmail(), expirationDate, tokenValue);
+        return new TokenModel(user.getId(), user.getEmail(), expirationDate, tokenValue);
     }
 
     @Override
-    public Token generateTokenForUser(User user) {
+    public TokenModel generateTokenForUser(UserEntity user) {
 
         if (user == null) return null;
 

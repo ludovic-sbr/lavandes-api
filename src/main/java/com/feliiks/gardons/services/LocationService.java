@@ -1,9 +1,7 @@
 package com.feliiks.gardons.services;
 
-import com.feliiks.gardons.entities.Location;
 import com.feliiks.gardons.exceptions.BusinessException;
-import com.feliiks.gardons.viewmodels.PatchLocationRequest;
-import com.feliiks.gardons.viewmodels.PostLocationRequest;
+import com.feliiks.gardons.viewmodels.LocationEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,15 +9,15 @@ import java.util.Optional;
 
 @Service
 public interface LocationService {
-    List<Location> findAll();
+    List<LocationEntity> findAll();
 
-    Optional<Location> findById(Long id);
+    Optional<LocationEntity> findById(Long id);
 
-    Optional<Location> findBySlotNumber(int slotNumber);
+    Optional<LocationEntity> findBySlotNumber(int slotNumber);
 
-    Location create(PostLocationRequest postLocationRequest) throws BusinessException;
+    LocationEntity create(LocationEntity location) throws BusinessException;
 
-    Location editLocation(Long id, PatchLocationRequest patchLocationRequest) throws BusinessException;
+    LocationEntity editLocation(Long id, LocationEntity location) throws BusinessException;
 
-    Optional<Location> deleteById(Long id);
+    Optional<LocationEntity> deleteById(Long id);
 }

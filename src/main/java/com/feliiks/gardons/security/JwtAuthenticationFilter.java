@@ -1,6 +1,6 @@
 package com.feliiks.gardons.security;
 
-import com.feliiks.gardons.entities.User;
+import com.feliiks.gardons.viewmodels.UserEntity;
 import com.feliiks.gardons.services.TokenService;
 import com.feliiks.gardons.services.UserService;
 import org.springframework.http.HttpHeaders;
@@ -58,14 +58,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String username = tokenService.getUsernameFromToken(token);
 
-            Optional<User> user = userService.findByEmail(username);
+            Optional<UserEntity> user = userService.findByEmail(username);
 
             if (user.isEmpty()) {
                 chain.doFilter(request, response);
                 return;
             }
 
-            User userEntity = user.get();
+            UserEntity userEntity = user.get();
 
             List<GrantedAuthority> authorities = new ArrayList<>();
 

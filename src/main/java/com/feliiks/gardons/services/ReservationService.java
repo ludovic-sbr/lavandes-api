@@ -1,10 +1,8 @@
 package com.feliiks.gardons.services;
 
-import com.feliiks.gardons.entities.Location;
-import com.feliiks.gardons.entities.Reservation;
 import com.feliiks.gardons.exceptions.BusinessException;
-import com.feliiks.gardons.viewmodels.PatchReservationRequest;
-import com.feliiks.gardons.viewmodels.PostReservationRequest;
+import com.feliiks.gardons.viewmodels.LocationEntity;
+import com.feliiks.gardons.viewmodels.ReservationEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,17 +10,17 @@ import java.util.Optional;
 
 @Service
 public interface ReservationService {
-    List<Reservation> findAll();
+    List<ReservationEntity> findAll();
 
-    Optional<Reservation> findById(Long id);
+    Optional<ReservationEntity> findById(Long id);
 
-    Optional<Reservation> findByReservationKey(String reservationKey);
+    Optional<ReservationEntity> findByReservationKey(String reservationKey);
 
-    List<Reservation> findByLocation(Location location);
+    List<ReservationEntity> findByLocation(LocationEntity location);
 
-    Reservation create(PostReservationRequest postReservationRequest) throws BusinessException;
+    ReservationEntity create(ReservationEntity reservation) throws BusinessException;
 
-    Reservation editReservation(Long id, PatchReservationRequest patchReservationRequest) throws BusinessException;
+    ReservationEntity editReservation(Long id, ReservationEntity reservation) throws BusinessException;
 
-    Optional<Reservation> deleteById(Long id);
+    Optional<ReservationEntity> deleteById(Long id);
 }

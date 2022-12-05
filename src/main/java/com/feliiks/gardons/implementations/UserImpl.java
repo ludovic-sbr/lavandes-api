@@ -1,14 +1,12 @@
 package com.feliiks.gardons.implementations;
 
-import com.feliiks.gardons.entities.Reservation;
-import com.feliiks.gardons.entities.Role;
-import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.UserRepository;
+import com.feliiks.gardons.viewmodels.ReservationEntity;
+import com.feliiks.gardons.viewmodels.RoleEntity;
+import com.feliiks.gardons.viewmodels.UserEntity;
 import com.feliiks.gardons.services.RoleService;
 import com.feliiks.gardons.services.UserService;
-import com.feliiks.gardons.viewmodels.PatchUserRequest;
-import com.feliiks.gardons.viewmodels.PostUserRequest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,29 +30,29 @@ public class UserImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<UserEntity> findAll() {
         return userRepository.findAll();
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<UserEntity> findById(Long id) {
         return userRepository.findById(id);
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
+    public Optional<UserEntity> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
     @Override
-    public Optional<User> findByGoogleId(String googleId) {
+    public Optional<UserEntity> findByGoogleId(String googleId) {
         return userRepository.findByGoogleId(googleId);
     }
 
 
     @Override
-    public List<Reservation> findUserReservations(Long id) throws BusinessException {
-        Optional<User> user = this.findById(id);
+    public List<ReservationEntity> findUserReservations(Long id) throws BusinessException {
+        Optional<UserEntity> user = this.findById(id);
 
         if (user.isEmpty()) {
             String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", id);
@@ -62,30 +60,30 @@ public class UserImpl implements UserService {
             throw new BusinessException(errorMessage);
         }
 
-        return userRepository.findUserReservations(user.get());
+        return userRepository.findUserReservations(user.get().getId());
     }
 
     @Override
-    public User register(PostUserRequest registerUserRequest) throws BusinessException {
-        Optional<User> existingUser = findByEmail(registerUserRequest.getEmail());
+    public UserEntity register(UserEntity user) throws BusinessException {
+        Optional<UserEntity> existingUser = findByEmail(user.getEmail());
 
         if (existingUser.isPresent()) {
-            String errorMessage = String.format("L'utilisateur '%s' existe déjà.", registerUserRequest.getEmail());
+            String errorMessage = String.format("L'utilisateur '%s' existe déjà.", user.getEmail());
 
             throw new BusinessException(errorMessage);
         }
 
-        User newUser = new User();
-        newUser.setFirstname(registerUserRequest.getFirstname());
-        newUser.setLastname(registerUserRequest.getLastname());
-        newUser.setEmail(registerUserRequest.getEmail());
-        newUser.setTel(registerUserRequest.getTel());
-        newUser.setPassword(registerUserRequest.getPassword() != null ?
-                this.passwordEncoder.encode(registerUserRequest.getPassword())
+        UserEntity newUser = new UserEntity();
+        newUser.setFirstname(user.getFirstname());
+        newUser.setLastname(user.getLastname());
+        newUser.setEmail(user.getEmail());
+        newUser.setTel(user.getTel());
+        newUser.setPassword(user.getPassword() != null ?
+                this.passwordEncoder.encode(user.getPassword())
                 : null);
-        newUser.setGoogle_id(registerUserRequest.getGoogleId());
+        newUser.setGoogle_id(user.getGoogle_id());
 
-        Optional<Role> role = roleService.findById(1L);
+        Optional<RoleEntity> role = roleService.findById(1L);
         role.ifPresent(newUser::setRole);
 
         userRepository.save(newUser);
@@ -94,58 +92,58 @@ public class UserImpl implements UserService {
     }
 
     @Override
-    public User editUser(Long id, PatchUserRequest patchUserRequest) throws BusinessException {
-        Optional<User> user = this.findById(id);
+    public UserEntity editUser(Long id, UserEntity user) throws BusinessException {
+        Optional<UserEntity> existingUser = this.findById(id);
 
-        if (user.isEmpty()) {
+        if (existingUser.isEmpty()) {
             String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", id);
 
             throw new BusinessException(errorMessage);
         }
 
-        if (patchUserRequest.getFirstname() != null) {
-            user.get().setFirstname(patchUserRequest.getFirstname());
+        if (user.getFirstname() != null) {
+            existingUser.get().setFirstname(user.getFirstname());
         }
 
-        if (patchUserRequest.getLastname() != null) {
-            user.get().setLastname(patchUserRequest.getLastname());
+        if (user.getLastname() != null) {
+            existingUser.get().setLastname(user.getLastname());
         }
 
-        if (patchUserRequest.getEmail() != null) {
-            Optional<User> existingUser = findByEmail(patchUserRequest.getEmail());
+        if (user.getEmail() != null) {
+            Optional<UserEntity> userExists = findByEmail(user.getEmail());
 
-            if (existingUser.isPresent()) {
-                String errorMessage = String.format("L'adresse email '%s' n'est pas disponible.", patchUserRequest.getEmail());
+            if (userExists.isPresent()) {
+                String errorMessage = String.format("L'adresse email '%s' n'est pas disponible.", user.getEmail());
 
                 throw new BusinessException(errorMessage);
             }
 
-            user.get().setEmail(patchUserRequest.getEmail());
+            existingUser.get().setEmail(user.getEmail());
         }
 
-        if (patchUserRequest.getTel() != null) {
-            user.get().setTel(patchUserRequest.getTel());
+        if (user.getTel() != null) {
+            existingUser.get().setTel(user.getTel());
         }
 
-        if (patchUserRequest.getRoleName() != null) {
-            Optional<Role> role = roleService.findByName(patchUserRequest.getRoleName());
+        if (user.getRole().getName() != null) {
+            Optional<RoleEntity> role = roleService.findByName(user.getRole().getName());
 
             if (role.isEmpty()) {
-                String errorMessage = String.format("Le rôle '%s' n'existe pas.", patchUserRequest.getRoleName());
+                String errorMessage = String.format("Le rôle '%s' n'existe pas.", user.getRole().getName());
 
                 throw new BusinessException(errorMessage);
             }
 
-            user.get().setRole(role.get());
+            existingUser.get().setRole(role.get());
         }
 
-        return userRepository.save(user.get());
+        return userRepository.save(existingUser.get());
     }
 
     @Override
-    public Optional<User> deleteById(Long id) {
+    public Optional<UserEntity> deleteById(Long id) {
         try {
-            Optional<User> user = userRepository.findById(id);
+            Optional<UserEntity> user = userRepository.findById(id);
 
             userRepository.deleteById(id);
 
