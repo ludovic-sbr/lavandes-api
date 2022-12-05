@@ -1,11 +1,9 @@
 package com.feliiks.gardons.implementations;
 
-import com.feliiks.gardons.entities.Location;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.LocationRepository;
+import com.feliiks.gardons.viewmodels.LocationEntity;
 import com.feliiks.gardons.services.LocationService;
-import com.feliiks.gardons.viewmodels.PatchLocationRequest;
-import com.feliiks.gardons.viewmodels.PostLocationRequest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -21,123 +19,123 @@ public class LocationImpl implements LocationService {
     }
 
     @Override
-    public List<Location> findAll() {
+    public List<LocationEntity> findAll() {
         return locationRepository.findAll();
     }
 
     @Override
-    public Optional<Location> findById(Long id) {
+    public Optional<LocationEntity> findById(Long id) {
         return locationRepository.findById(id);
     }
 
     @Override
-    public Optional<Location> findBySlotNumber(int slotNumber) {
+    public Optional<LocationEntity> findBySlotNumber(int slotNumber) {
         return locationRepository.findBySlotNumber(slotNumber);
     }
 
     @Override
-    public Location create(PostLocationRequest postLocationRequest) throws BusinessException {
-        Optional<Location> existingLocation = this.findBySlotNumber(postLocationRequest.getSlot_number());
+    public LocationEntity create(LocationEntity location) throws BusinessException {
+        Optional<LocationEntity> existingLocation = this.findBySlotNumber(location.getSlot_number());
 
         if (existingLocation.isPresent()) {
-            String errorMessage = String.format("Une location existe déjà pour le numéro d'emplacement '%s'.", postLocationRequest.getSlot_number());
+            String errorMessage = String.format("Une location existe déjà pour le numéro d'emplacement '%s'.", location.getSlot_number());
 
             throw new BusinessException(errorMessage);
         }
 
-        Location newLocation = new Location();
-        newLocation.setDescription(postLocationRequest.getDescription());
-        newLocation.setParking(postLocationRequest.getParking());
-        newLocation.setKitchen(postLocationRequest.getKitchen());
-        newLocation.setWifi(postLocationRequest.getWifi());
-        newLocation.setSanitary(postLocationRequest.getSanitary());
-        newLocation.setHeater(postLocationRequest.getHeater());
-        newLocation.setAir_conditioner(postLocationRequest.getAir_conditioner());
-        newLocation.setTerrace(postLocationRequest.getTerrace());
-        newLocation.setBarbecue(postLocationRequest.getBarbecue());
-        newLocation.setSurface(postLocationRequest.getSurface());
-        newLocation.setMax_persons(postLocationRequest.getMax_persons());
-        newLocation.setPrice_per_night(postLocationRequest.getPrice_per_night());
-        newLocation.setBedrooms(postLocationRequest.getBedrooms());
-        newLocation.setSlot_number(postLocationRequest.getSlot_number());
+        LocationEntity newLocation = new LocationEntity();
+        newLocation.setDescription(location.getDescription());
+        newLocation.setParking(location.getParking());
+        newLocation.setKitchen(location.getKitchen());
+        newLocation.setWifi(location.getWifi());
+        newLocation.setSanitary(location.getSanitary());
+        newLocation.setHeater(location.getHeater());
+        newLocation.setAir_conditioner(location.getAir_conditioner());
+        newLocation.setTerrace(location.getTerrace());
+        newLocation.setBarbecue(location.getBarbecue());
+        newLocation.setSurface(location.getSurface());
+        newLocation.setMax_persons(location.getMax_persons());
+        newLocation.setPrice_per_night(location.getPrice_per_night());
+        newLocation.setBedrooms(location.getBedrooms());
+        newLocation.setSlot_number(location.getSlot_number());
         newLocation.setAvailable(true);
 
         return locationRepository.save(newLocation);
     }
 
     @Override
-    public Location editLocation(Long id, PatchLocationRequest patchLocationRequest) throws BusinessException {
-        Optional<Location> location = this.findById(id);
+    public LocationEntity editLocation(Long id, LocationEntity location) throws BusinessException {
+        Optional<LocationEntity> existingLocation = this.findById(id);
 
-        if (location.isEmpty()) {
+        if (existingLocation.isEmpty()) {
             String errorMessage = String.format("La location '%s' n'existe pas.", id);
 
             throw new BusinessException(errorMessage);
         }
 
-        if (patchLocationRequest.getDescription() != null) {
-            location.get().setDescription(patchLocationRequest.getDescription());
+        if (location.getDescription() != null) {
+            existingLocation.get().setDescription(location.getDescription());
         }
 
-        if (patchLocationRequest.getParking() != null) {
-            location.get().setParking(patchLocationRequest.getParking());
+        if (location.getParking() != null) {
+            existingLocation.get().setParking(location.getParking());
         }
 
-        if (patchLocationRequest.getKitchen() != null) {
-            location.get().setKitchen(patchLocationRequest.getKitchen());
+        if (location.getKitchen() != null) {
+            existingLocation.get().setKitchen(location.getKitchen());
         }
 
-        if (patchLocationRequest.getWifi() != null) {
-            location.get().setWifi(patchLocationRequest.getWifi());
+        if (location.getWifi() != null) {
+            existingLocation.get().setWifi(location.getWifi());
         }
 
-        if (patchLocationRequest.getSanitary() != null) {
-            location.get().setSanitary(patchLocationRequest.getSanitary());
+        if (location.getSanitary() != null) {
+            existingLocation.get().setSanitary(location.getSanitary());
         }
 
-        if (patchLocationRequest.getHeater() != null) {
-            location.get().setHeater(patchLocationRequest.getHeater());
+        if (location.getHeater() != null) {
+            existingLocation.get().setHeater(location.getHeater());
         }
 
-        if (patchLocationRequest.getAir_conditioner() != null) {
-            location.get().setAir_conditioner(patchLocationRequest.getAir_conditioner());
+        if (location.getAir_conditioner() != null) {
+            existingLocation.get().setAir_conditioner(location.getAir_conditioner());
         }
 
-        if (patchLocationRequest.getTerrace() != null) {
-            location.get().setTerrace(patchLocationRequest.getTerrace());
+        if (location.getTerrace() != null) {
+            existingLocation.get().setTerrace(location.getTerrace());
         }
 
-        if (patchLocationRequest.getBarbecue() != null) {
-            location.get().setBarbecue(patchLocationRequest.getBarbecue());
+        if (location.getBarbecue() != null) {
+            existingLocation.get().setBarbecue(location.getBarbecue());
         }
 
-        if (patchLocationRequest.getSurface() != 0) {
-            location.get().setSurface(patchLocationRequest.getSurface());
+        if (location.getSurface() != 0) {
+            existingLocation.get().setSurface(location.getSurface());
         }
 
-        if (patchLocationRequest.getMax_persons() != 0) {
-            location.get().setMax_persons(patchLocationRequest.getMax_persons());
+        if (location.getMax_persons() != 0) {
+            existingLocation.get().setMax_persons(location.getMax_persons());
         }
 
-        if (patchLocationRequest.getPrice_per_night() != 0) {
-            location.get().setPrice_per_night(patchLocationRequest.getPrice_per_night());
+        if (location.getPrice_per_night() != 0) {
+            existingLocation.get().setPrice_per_night(location.getPrice_per_night());
         }
 
-        if (patchLocationRequest.getBedrooms() != 0) {
-            location.get().setBedrooms(patchLocationRequest.getBedrooms());
+        if (location.getBedrooms() != 0) {
+            existingLocation.get().setBedrooms(location.getBedrooms());
         }
 
-        if (patchLocationRequest.getAvailable() != null) {
-            location.get().setAvailable(patchLocationRequest.getAvailable());
+        if (location.getAvailable() != null) {
+            existingLocation.get().setAvailable(location.getAvailable());
         }
 
-        return locationRepository.save(location.get());
+        return locationRepository.save(existingLocation.get());
     }
 
     @Override
-    public Optional<Location> deleteById(Long id) {
+    public Optional<LocationEntity> deleteById(Long id) {
         try {
-            Optional<Location> location = locationRepository.findById(id);
+            Optional<LocationEntity> location = locationRepository.findById(id);
 
             locationRepository.deleteById(id);
 

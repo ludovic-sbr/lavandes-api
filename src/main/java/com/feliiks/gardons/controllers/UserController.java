@@ -1,17 +1,14 @@
 package com.feliiks.gardons.controllers;
 
-import com.feliiks.gardons.entities.Reservation;
-import com.feliiks.gardons.entities.User;
+import com.feliiks.gardons.converters.UserConverter;
+import com.feliiks.gardons.dtos.*;
 import com.feliiks.gardons.exceptions.BusinessException;
+import com.feliiks.gardons.viewmodels.ReservationEntity;
+import com.feliiks.gardons.viewmodels.UserEntity;
 import com.feliiks.gardons.services.UserService;
-import com.feliiks.gardons.viewmodels.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,20 +19,19 @@ import java.util.Optional;
 @RequestMapping("/user")
 public class UserController {
     public final UserService userService;
+    private final UserConverter userConverter;
 
-    public UserController(UserService userService) {
+    public UserController(
+            UserService userService,
+            UserConverter userConverter) {
         this.userService = userService;
-    }
-
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
+        this.userConverter = userConverter;
     }
 
     @Operation(summary = "List all users.")
     @GetMapping(produces = "application/json")
     public ResponseEntity<GetUsersResponse> getAllUsers() {
-        List<User> users = userService.findAll();
+        List<UserEntity> users = userService.findAll();
 
         return ResponseEntity.status(200).body(new GetUsersResponse(users));
     }
@@ -43,26 +39,20 @@ public class UserController {
     @Operation(summary = "Get the current user.")
     @GetMapping(path = "/me", produces = "application/json")
     public ResponseEntity<GetUserResponse> getMyself() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = userConverter.getLoggedUser();
 
-        User user = (User) authentication.getPrincipal();
-        User mappedUser = new ModelMapper().map(user, User.class);
-
-        return ResponseEntity.status(200).body(new GetUserResponse(mappedUser));
+        return ResponseEntity.status(200).body(new GetUserResponse(user));
     }
 
     @Operation(summary = "List all reservations of current user.")
     @GetMapping(path = "/me/reservation", produces = "application/json")
     public ResponseEntity<GetReservationsResponse> getMyReservations() throws BusinessException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = userConverter.getLoggedUser();
 
-        User user = (User) authentication.getPrincipal();
-        User mappedUser = new ModelMapper().map(user, User.class);
-
-        List<Reservation> userReservations = userService.findUserReservations(mappedUser.getId());
+        List<ReservationEntity> userReservations = userService.findUserReservations(user.getId());
 
         if (userReservations.isEmpty()) {
-            String errorMessage = String.format("L'utilisateur '%s' n'a aucune réservation.", mappedUser.getId());
+            String errorMessage = String.format("L'utilisateur '%s' n'a aucune réservation.", user.getId());
             throw new BusinessException(errorMessage);
         }
 
@@ -72,7 +62,7 @@ public class UserController {
     @Operation(summary = "Get user by id.")
     @GetMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<GetUserResponse> getUserById(@PathVariable("id") Long id) throws BusinessException {
-        Optional<User> user = userService.findById(id);
+        Optional<UserEntity> user = userService.findById(id);
 
         if (user.isEmpty()) {
             String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", id);
@@ -85,7 +75,7 @@ public class UserController {
     @Operation(summary = "List all reservations of specific user.")
     @GetMapping(path = "/{id}/reservation", produces = "application/json")
     public ResponseEntity<GetReservationsResponse> getUserReservations(@PathVariable("id") Long id) throws BusinessException {
-        List<Reservation> userReservations = userService.findUserReservations(id);
+        List<ReservationEntity> userReservations = userService.findUserReservations(id);
 
         if (userReservations.isEmpty()) {
             String errorMessage = String.format("L'utilisateur '%s' n'a aucune réservation.", id);
@@ -98,28 +88,29 @@ public class UserController {
     @Operation(summary = "Create a new user.")
     @PostMapping(produces = "application/json")
     public ResponseEntity<PostUserResponse> saveNewUser(@RequestBody PostUserRequest postUserRequest) throws BusinessException {
-        User user = userService.register(postUserRequest);
+        UserEntity user = userConverter.convertToEntity(postUserRequest);
 
-        return ResponseEntity.status(201).body(new PostUserResponse(user));
+        UserEntity savedUser = userService.register(user);
+
+        return ResponseEntity.status(201).body(new PostUserResponse(savedUser));
     }
 
     @Operation(summary = "Partial update a specific user.")
     @PatchMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<PatchUserResponse> editUser(@PathVariable("id") Long id, @RequestBody PatchUserRequest patchUserRequest) throws BusinessException {
-        User user = userService.editUser(id, patchUserRequest);
+        UserEntity user = userConverter.convertToEntity(patchUserRequest);
+        UserEntity userToPatch = userService.editUser(id, user);
 
-        return ResponseEntity.status(200).body(new PatchUserResponse(user));
+        return ResponseEntity.status(200).body(new PatchUserResponse(userToPatch));
     }
 
     @Operation(summary = "Partial update the current user.")
     @PatchMapping(path = "/me", produces = "application/json")
     public ResponseEntity<PatchUserResponse> editMyself(@RequestBody PatchUserRequest patchUserRequest) throws BusinessException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = userConverter.getLoggedUser();
+        UserEntity patch = userConverter.convertToEntity(patchUserRequest);
 
-        User user = (User) authentication.getPrincipal();
-        User mappedUser = new ModelMapper().map(user, User.class);
-
-        User patchedUser = userService.editUser(mappedUser.getId(), patchUserRequest);
+        UserEntity patchedUser = userService.editUser(user.getId(), patch);
 
         return ResponseEntity.status(200).body(new PatchUserResponse(patchedUser));
     }
@@ -127,7 +118,7 @@ public class UserController {
     @Operation(summary = "Delete a specific user.")
     @DeleteMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<DeleteUserResponse> deleteUser(@PathVariable("id") Long id) throws BusinessException {
-        Optional<User> user = userService.deleteById(id);
+        Optional<UserEntity> user = userService.deleteById(id);
 
         if (user.isEmpty()) {
             String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", id);

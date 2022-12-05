@@ -1,27 +1,77 @@
 package com.feliiks.gardons.repositories;
 
-import com.feliiks.gardons.entities.Reservation;
-import com.feliiks.gardons.entities.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import com.feliiks.gardons.converters.ReservationConverter;
+import com.feliiks.gardons.converters.UserConverter;
+import com.feliiks.gardons.repositories.jpa.UserJpaRepository;
+import com.feliiks.gardons.sqlmodels.ReservationModel;
+import com.feliiks.gardons.sqlmodels.UserModel;
+import com.feliiks.gardons.viewmodels.ReservationEntity;
+import com.feliiks.gardons.viewmodels.UserEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
-@RepositoryRestResource(path = "rest")
-public interface UserRepository extends JpaRepository<User, Long> {
-    @Query("select user from User user where user.email = :email")
-    Optional<User> findByEmail(@Param("email") String email);
+@Component
+public class UserRepository {
+    private final UserJpaRepository userJpaRepository;
+    private final UserConverter userConverter;
+    private final ReservationConverter reservationConverter;
 
-    @Query("select user from User user where user.google_id = :googleId")
-    Optional<User> findByGoogleId(@Param("googleId") String googleId);
+    public UserRepository(
+            UserJpaRepository userJpaRepository,
+            UserConverter userConverter,
+            ReservationConverter reservationConverter) {
+        this.userJpaRepository = userJpaRepository;
+        this.userConverter = userConverter;
+        this.reservationConverter = reservationConverter;
+    }
 
-    @Query("select reservation from Reservation reservation where reservation.user = :user")
-    List<Reservation> findUserReservations(User user);
+    public List<UserEntity> findAll() {
+        List<UserModel> allUsers = userJpaRepository.findAll();
 
-    void deleteById(Long id);
+        return allUsers.stream().map(userConverter::convertToEntity).toList();
+    }
 
-    User save(User user);
+    public Optional<UserEntity> findById(Long id) {
+        Optional<UserModel> user = userJpaRepository.findById(id);
+
+        if (user.isEmpty()) return Optional.empty();
+
+        return Optional.of(userConverter.convertToEntity(user.get()));
+    }
+
+    public Optional<UserEntity> findByEmail(String email) {
+        Optional<UserModel> user = userJpaRepository.findByEmail(email);
+
+        if (user.isEmpty()) return Optional.empty();
+
+        return Optional.of(userConverter.convertToEntity(user.get()));
+    }
+
+    public Optional<UserEntity> findByGoogleId(String googleId) {
+        Optional<UserModel> user = userJpaRepository.findByGoogleId(googleId);
+
+        if (user.isEmpty()) return Optional.empty();
+
+        return Optional.of(userConverter.convertToEntity(user.get()));
+    }
+
+    public List<ReservationEntity> findUserReservations(Long id) {
+        List<ReservationModel> userReservations = userJpaRepository.findUserReservations(id);
+
+        return userReservations.stream().map(reservationConverter::convertToEntity).toList();
+    }
+
+    public UserEntity save(UserEntity user) {
+        UserModel mappedUser = userConverter.convertToModel(user);
+
+        UserModel savedUser = userJpaRepository.save(mappedUser);
+
+        return userConverter.convertToEntity(savedUser);
+    }
+
+    public void deleteById(Long id) {
+        userJpaRepository.deleteById(id);
+    }
 }

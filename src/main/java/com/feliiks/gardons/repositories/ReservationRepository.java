@@ -1,22 +1,71 @@
 package com.feliiks.gardons.repositories;
 
-import com.feliiks.gardons.entities.Location;
-import com.feliiks.gardons.entities.Reservation;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import com.feliiks.gardons.converters.LocationConverter;
+import com.feliiks.gardons.converters.ReservationConverter;
+import com.feliiks.gardons.repositories.jpa.ReservationJpaRepository;
+import com.feliiks.gardons.sqlmodels.LocationModel;
+import com.feliiks.gardons.sqlmodels.ReservationModel;
+import com.feliiks.gardons.viewmodels.LocationEntity;
+import com.feliiks.gardons.viewmodels.ReservationEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
-@RepositoryRestResource(path = "rest")
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    @Query("select reservation from Reservation reservation where reservation.reservation_key = :reservationKey")
-    Optional<Reservation> findByReservationKey(@Param("reservationKey") String reservationKey);
+@Component
+public class ReservationRepository {
 
-    @Query("select reservation from Reservation reservation where reservation.location = :location")
-    List<Reservation> findByLocation(@Param("location") Location location);
+    private final ReservationJpaRepository reservationJpaRepository;
+    private final ReservationConverter reservationConverter;
+    private final LocationConverter locationConverter;
 
-    void deleteById(Long id);
+    public ReservationRepository(
+            ReservationJpaRepository reservationJpaRepository,
+            ReservationConverter reservationConverter,
+            LocationConverter locationConverter) {
+        this.reservationJpaRepository = reservationJpaRepository;
+        this.reservationConverter = reservationConverter;
+        this.locationConverter = locationConverter;
+    }
+
+    public List<ReservationEntity> findAll() {
+        List<ReservationModel> allReservations = reservationJpaRepository.findAll();
+
+        return allReservations.stream().map(reservationConverter::convertToEntity).toList();
+    }
+
+    public Optional<ReservationEntity> findById(Long id) {
+        Optional<ReservationModel> reservation = reservationJpaRepository.findById(id);
+
+        if (reservation.isEmpty()) return Optional.empty();
+
+        return Optional.of(reservationConverter.convertToEntity(reservation.get()));
+    }
+
+    public Optional<ReservationEntity> findByReservationKey(String reservationKey) {
+        Optional<ReservationModel> reservation = reservationJpaRepository.findByReservationKey(reservationKey);
+
+        if (reservation.isEmpty()) return Optional.empty();
+
+        return Optional.of(reservationConverter.convertToEntity(reservation.get()));
+    }
+
+    public List<ReservationEntity> findByLocation (LocationEntity location) {
+        LocationModel mappedLocation = locationConverter.convertToModel(location);
+        List<ReservationModel> reservations = reservationJpaRepository.findByLocation(mappedLocation);
+
+        return reservations.stream().map(reservationConverter::convertToEntity).toList();
+    }
+
+    public ReservationEntity save(ReservationEntity reservation) {
+        ReservationModel mappedReservation = reservationConverter.convertToModel(reservation);
+
+        ReservationModel savedReservation = reservationJpaRepository.save(mappedReservation);
+
+        return reservationConverter.convertToEntity(savedReservation);
+    }
+
+    public void deleteById(Long id) {
+        reservationJpaRepository.deleteById(id);
+    }
 }

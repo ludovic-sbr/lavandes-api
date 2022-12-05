@@ -1,6 +1,6 @@
 package com.feliiks.gardons.security;
 
-import com.feliiks.gardons.entities.User;
+import com.feliiks.gardons.sqlmodels.UserModel;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +18,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        User user = (User) auth.getPrincipal();
+        UserModel user = (UserModel) auth.getPrincipal();
 
         response.sendError(HttpServletResponse.SC_FORBIDDEN, String.format("Accès refusé pour l'utilisateur %s à la ressource demandée.", user.getEmail()));
     }

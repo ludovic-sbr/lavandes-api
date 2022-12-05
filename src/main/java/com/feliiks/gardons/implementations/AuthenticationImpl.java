@@ -1,13 +1,12 @@
 package com.feliiks.gardons.implementations;
 
-import com.feliiks.gardons.entities.Token;
-import com.feliiks.gardons.entities.User;
+import com.feliiks.gardons.sqlmodels.TokenModel;
 import com.feliiks.gardons.exceptions.AuthenticationException;
 import com.feliiks.gardons.exceptions.BusinessException;
+import com.feliiks.gardons.viewmodels.UserEntity;
 import com.feliiks.gardons.services.AuthenticationService;
 import com.feliiks.gardons.services.TokenService;
 import com.feliiks.gardons.services.UserService;
-import com.feliiks.gardons.viewmodels.LoginUserRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,36 +26,36 @@ public class AuthenticationImpl implements AuthenticationService {
     }
 
     @Override
-    public Token authenticate(LoginUserRequest loginUserRequest) throws AuthenticationException {
+    public TokenModel authenticate(UserEntity user) throws AuthenticationException {
         try {
-            if (loginUserRequest.getGoogleId() != null) {
-                Optional<User> user = userService.findByGoogleId(loginUserRequest.getGoogleId());
+            if (user.getGoogle_id() != null) {
+                Optional<UserEntity> existingUser = userService.findByGoogleId(user.getGoogle_id());
 
-                if (user.isEmpty()) {
-                    String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", loginUserRequest.getEmail());
+                if (existingUser.isEmpty()) {
+                    String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", user.getEmail());
 
                     throw new BusinessException(errorMessage);
                 }
 
-                return tokenService.generateTokenForUser(user.get());
+                return tokenService.generateTokenForUser(user);
             }
 
-            Optional<User> user = userService.findByEmail(loginUserRequest.getEmail());
+            Optional<UserEntity> existingUser = userService.findByEmail(user.getEmail());
 
-            if (user.isEmpty()) {
-                String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", loginUserRequest.getEmail());
+            if (existingUser.isEmpty()) {
+                String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", user.getEmail());
 
                 throw new BusinessException(errorMessage);
             }
 
-            boolean encodedPassword = this.passwordEncoder.matches(loginUserRequest.getPassword(), user.get().getPassword());
+            boolean encodedPassword = this.passwordEncoder.matches(user.getPassword(), existingUser.get().getPassword());
             if (!encodedPassword) {
                 throw new BusinessException("Les mots de passe ne correspondent pas.");
             }
 
-            return tokenService.generateTokenForUser(user.get());
+            return tokenService.generateTokenForUser(existingUser.get());
         } catch (BusinessException err) {
-            String errorMessage = String.format("Identifiant ou mot de passe incorrect pour l'utilisateur '%s'.", loginUserRequest.getEmail());
+            String errorMessage = String.format("Identifiant ou mot de passe incorrect pour l'utilisateur '%s'.", user.getEmail());
 
             throw new AuthenticationException(errorMessage, err);
         }

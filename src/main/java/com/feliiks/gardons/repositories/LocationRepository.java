@@ -1,19 +1,59 @@
 package com.feliiks.gardons.repositories;
 
-import com.feliiks.gardons.entities.Location;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import com.feliiks.gardons.converters.LocationConverter;
+import com.feliiks.gardons.repositories.jpa.LocationJpaRepository;
+import com.feliiks.gardons.sqlmodels.LocationModel;
+import com.feliiks.gardons.viewmodels.LocationEntity;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
-@RepositoryRestResource(path = "rest")
-public interface LocationRepository extends JpaRepository<Location, Long> {
-    @Query("select location from Location location where location.slot_number = :slotNumber")
-    Optional<Location> findBySlotNumber(@Param("slotNumber") int slotNumber);
 
-    void deleteById(Long id);
+@Component
+public class LocationRepository {
 
-    Location save(Location location);
+    private final LocationJpaRepository locationJpaRepository;
+    private final LocationConverter locationConverter;
+
+    public LocationRepository(
+            LocationJpaRepository locationJpaRepository,
+            LocationConverter locationConverter) {
+        this.locationJpaRepository = locationJpaRepository;
+        this.locationConverter = locationConverter;
+    }
+
+    public List<LocationEntity> findAll() {
+        List<LocationModel> allLocations = locationJpaRepository.findAll();
+
+        return allLocations.stream().map(locationConverter::convertToEntity).toList();
+    }
+
+    public Optional<LocationEntity> findById(Long id) {
+        Optional<LocationModel> location = locationJpaRepository.findById(id);
+
+        if (location.isEmpty()) return Optional.empty();
+
+        return Optional.of(locationConverter.convertToEntity(location.get()));
+    }
+
+    public Optional<LocationEntity> findBySlotNumber(int slotNumber) {
+        Optional<LocationModel> location = locationJpaRepository.findBySlotNumber(slotNumber);
+
+        if (location.isEmpty()) return Optional.empty();
+
+        return Optional.of(locationConverter.convertToEntity(location.get()));
+    }
+
+    public LocationEntity save(LocationEntity location) {
+        LocationModel currentLocation = locationConverter.convertToModel(location);
+
+        locationJpaRepository.save(currentLocation);
+
+        return locationConverter.convertToEntity(currentLocation);
+    }
+
+    public void deleteById(Long id) {
+        locationJpaRepository.deleteById(id);
+    }
 }

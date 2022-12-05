@@ -1,9 +1,9 @@
 package com.feliiks.gardons.implementations;
 
-import com.feliiks.gardons.entities.Role;
-import com.feliiks.gardons.entities.User;
 import com.feliiks.gardons.repositories.RoleRepository;
 import com.feliiks.gardons.repositories.UserRepository;
+import com.feliiks.gardons.viewmodels.RoleEntity;
+import com.feliiks.gardons.viewmodels.UserEntity;
 import com.feliiks.gardons.services.RoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,29 +26,30 @@ public class RoleImpl implements RoleService {
     }
 
     @Override
-    public List<Role> findAll() {
+    public List<RoleEntity> findAll() {
         return roleRepository.findAll();
     }
 
     @Override
-    public Optional<Role> findById(Long id) {
+    public Optional<RoleEntity> findById(Long id) {
+
         return roleRepository.findById(id);
     }
 
     @Override
-    public Optional<Role> findByName(String name) {
+    public Optional<RoleEntity> findByName(String name) {
         return roleRepository.findByName(name);
     }
 
     @Override
-    public Role save(Role role) {
+    public RoleEntity save(RoleEntity role) {
         return roleRepository.save(role);
     }
 
     @Override
     public void addRoleToUser(Long id, String roleName) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
-        Role role = roleRepository.findByName(roleName).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+        RoleEntity role = roleRepository.findByName(roleName).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
         user.setRole(role);
     }
