@@ -42,6 +42,14 @@ public class ReservationRepository {
         return Optional.of(reservationConverter.convertToEntity(reservation.get()));
     }
 
+    public Optional<ReservationEntity> findBySessionId(String sessionId) {
+        Optional<ReservationModel> reservation = reservationJpaRepository.findBySessionId(sessionId);
+
+        if (reservation.isEmpty()) return Optional.empty();
+
+        return Optional.of(reservationConverter.convertToEntity(reservation.get()));
+    }
+
     public Optional<ReservationEntity> findByReservationKey(String reservationKey) {
         Optional<ReservationModel> reservation = reservationJpaRepository.findByReservationKey(reservationKey);
 

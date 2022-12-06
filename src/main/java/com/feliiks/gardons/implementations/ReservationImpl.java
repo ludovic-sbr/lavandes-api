@@ -1,13 +1,16 @@
 package com.feliiks.gardons.implementations;
 
+import com.feliiks.gardons.dtos.CheckoutSessionRequest;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.ReservationRepository;
+import com.feliiks.gardons.services.StripeService;
 import com.feliiks.gardons.viewmodels.LocationEntity;
 import com.feliiks.gardons.viewmodels.ReservationEntity;
 import com.feliiks.gardons.viewmodels.UserEntity;
 import com.feliiks.gardons.services.LocationService;
 import com.feliiks.gardons.services.ReservationService;
 import com.feliiks.gardons.services.UserService;
+import com.stripe.model.checkout.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -25,11 +29,17 @@ public class ReservationImpl implements ReservationService {
     public final ReservationRepository reservationRepository;
     public final UserService userService;
     public final LocationService locationService;
+    public final StripeService stripeService;
 
-    public ReservationImpl(ReservationRepository reservationRepository, UserService userService, LocationService locationService) {
+    public ReservationImpl(
+            ReservationRepository reservationRepository,
+            UserService userService,
+            LocationService locationService,
+            StripeService stripeService) {
         this.reservationRepository = reservationRepository;
         this.userService = userService;
         this.locationService = locationService;
+        this.stripeService = stripeService;
     }
 
     @Override
@@ -40,6 +50,18 @@ public class ReservationImpl implements ReservationService {
     @Override
     public Optional<ReservationEntity> findById(Long id) {
         return reservationRepository.findById(id);
+    }
+
+    @Override
+    public Optional<ReservationEntity> findBySessionId(String sessionId) {
+        return reservationRepository.findBySessionId(sessionId);
+    }
+
+    @Override
+    public List<ReservationEntity> findByStatus(ReservationEntity.ReservationStatusEnum status) {
+        List<ReservationEntity> reservations = this.findAll();
+
+        return reservations.stream().filter(elt -> elt.getStatus() == status).toList();
     }
 
     @Override
@@ -60,6 +82,9 @@ public class ReservationImpl implements ReservationService {
             throw new BusinessException(errorMessage);
         }
 
+        // Calcul du nombre de nuits
+        int nightNumber = this.totalNights(reservation.getFrom(), reservation.getTo());
+
         // Validité de l'user et de la location
         Optional<UserEntity> user = userService.findById(reservation.getUser().getId());
         Optional<LocationEntity> location = locationService.findById(reservation.getLocation().getId());
@@ -71,8 +96,15 @@ public class ReservationImpl implements ReservationService {
 
         // Validité de la période choisie
         List<ReservationEntity> existingReservations = this.findByLocation(location.get());
-        long conflictualReservations =
+
+        List<ReservationEntity> completeReservations =
                 existingReservations
+                        .stream()
+                        .filter(elt -> Objects.equals(elt.getStatus(), ReservationEntity.ReservationStatusEnum.COMPLETE))
+                        .toList();
+
+        long conflictualReservations =
+                completeReservations
                         .stream()
                         .filter(elt -> elt.getFrom().compareTo(reservation.getTo()) < 0 && elt.getTo().compareTo(reservation.getFrom()) > 0)
                         .count();
@@ -81,6 +113,15 @@ public class ReservationImpl implements ReservationService {
             String errorMessage = "La location sélectionnée n'est pas disponible sur la période choisie.";
             throw new BusinessException(errorMessage);
         }
+
+        // Création de la checkout session stripe
+        CheckoutSessionRequest checkoutSessionRequest = new CheckoutSessionRequest();
+        checkoutSessionRequest.setProductId(location.get().getStripeProductId());
+        checkoutSessionRequest.setUserId(user.get().getId());
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        checkoutSessionRequest.setQuantity((long) nightNumber);
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Session stripeSession = stripeService.createCheckoutSession(checkoutSessionRequest);
 
         // Création de la réservation
         ReservationEntity newReservation = new ReservationEntity();
@@ -93,9 +134,10 @@ public class ReservationImpl implements ReservationService {
         newReservation.setVehicle_nbr(reservation.getVehicle_nbr());
         newReservation.setFrom(reservation.getFrom());
         newReservation.setTo(reservation.getTo());
-        int nightNumber = this.totalNights(reservation.getFrom(), reservation.getTo());
         newReservation.setNight_number(nightNumber);
         newReservation.setTotal_price(this.totalPrice(location.get().getPrice_per_night(), nightNumber));
+        newReservation.setStripe_session_id(stripeSession.getId());
+        newReservation.setStatus(ReservationEntity.ReservationStatusEnum.OPEN);
 
         return reservationRepository.save(newReservation);
     }
@@ -111,7 +153,7 @@ public class ReservationImpl implements ReservationService {
         }
 
         // Update des champs
-        if (reservation.getUser().getId() != null) {
+        if (reservation.getUser() != null && reservation.getUser().getId() != null) {
             Optional<UserEntity> user = userService.findById(reservation.getUser().getId());
 
             if (user.isEmpty()) {
@@ -122,7 +164,7 @@ public class ReservationImpl implements ReservationService {
             existingReservation.get().setUser(user.get());
         }
 
-        if (reservation.getLocation().getId() != null) {
+        if (reservation.getLocation() != null && reservation.getLocation().getId() != null) {
             Optional<LocationEntity> location = locationService.findById(reservation.getLocation().getId());
 
             if (location.isEmpty()) {
@@ -131,15 +173,20 @@ public class ReservationImpl implements ReservationService {
             }
 
             List<ReservationEntity> existingReservations = this.findByLocation(location.get());
-            long nonConflictualReservations =
+
+            List<ReservationEntity> completeReservations =
                     existingReservations
                             .stream()
-                            .filter(elt ->
-                                    (elt.getFrom().compareTo(existingReservation.get().getFrom()) < 0 && elt.getTo().compareTo(existingReservation.get().getFrom()) < 0)
-                                            || (elt.getFrom().compareTo(existingReservation.get().getTo()) > 0 && elt.getTo().compareTo(existingReservation.get().getTo()) > 0))
+                            .filter(elt -> Objects.equals(elt.getStatus(), ReservationEntity.ReservationStatusEnum.COMPLETE))
+                            .toList();
+
+            long conflictualReservations =
+                    completeReservations
+                            .stream()
+                            .filter(elt -> elt.getFrom().compareTo(existingReservation.get().getTo()) < 0 && elt.getTo().compareTo(existingReservation.get().getFrom()) > 0)
                             .count();
 
-            if (nonConflictualReservations < existingReservations.toArray().length) {
+            if (conflictualReservations > 0) {
                 String errorMessage = "La location sélectionnée n'est pas disponible sur la période choisie.";
                 throw new BusinessException(errorMessage);
             }
@@ -158,12 +205,14 @@ public class ReservationImpl implements ReservationService {
 
         if (reservation.getAnimal_nbr() != 0) {
             existingReservation.get().setAnimal_nbr(reservation.getAnimal_nbr());
-
         }
 
         if (reservation.getVehicle_nbr() != 0) {
             existingReservation.get().setVehicle_nbr(reservation.getVehicle_nbr());
+        }
 
+        if (reservation.getStatus() != null) {
+            existingReservation.get().setStatus((reservation.getStatus()));
         }
 
         return reservationRepository.save(existingReservation.get());

@@ -14,7 +14,11 @@ public interface ReservationService {
 
     Optional<ReservationEntity> findById(Long id);
 
+    Optional<ReservationEntity> findBySessionId(String sessionId);
+
     Optional<ReservationEntity> findByReservationKey(String reservationKey);
+
+    List<ReservationEntity> findByStatus(ReservationEntity.ReservationStatusEnum status);
 
     List<ReservationEntity> findByLocation(LocationEntity location);
 

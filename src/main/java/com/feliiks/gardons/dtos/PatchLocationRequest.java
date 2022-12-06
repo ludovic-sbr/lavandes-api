@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class PatchLocationRequest {
+    String stripeProductId;
     String description;
     Boolean parking;
     Boolean kitchen;

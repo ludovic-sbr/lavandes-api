@@ -2,6 +2,7 @@ package com.feliiks.gardons.viewmodels;
 
 public class LocationEntity {
     private Long id;
+    private String stripeProductId;
     private String description;
     private Boolean parking;
     private Boolean kitchen;
@@ -20,7 +21,8 @@ public class LocationEntity {
 
     public LocationEntity() {}
 
-    public LocationEntity(String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms, boolean available, int slot_number) {
+    public LocationEntity(String stripeProductId, String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms, boolean available, int slot_number) {
+        this.stripeProductId = stripeProductId;
         this.description = description;
         this.parking = parking;
         this.kitchen = kitchen;
@@ -44,6 +46,14 @@ public class LocationEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getStripeProductId() {
+        return stripeProductId;
+    }
+
+    public void setStripeProductId(String stripeProductId) {
+        this.stripeProductId = stripeProductId;
     }
 
     public String getDescription() {

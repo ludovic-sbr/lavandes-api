@@ -67,6 +67,24 @@ public class ReservationController {
         return ResponseEntity.status(200).body(new PatchReservationResponse(reservationToPatch));
     }
 
+    @Operation(summary = "Update the status of a specific reservation.")
+    @PatchMapping(path = "/{sessionId}/status", produces = "application/json")
+    public ResponseEntity<PatchReservationResponse> editReservation(@PathVariable("sessionId") String sessionId, @RequestBody ReservationEntity.ReservationStatusEnum status) throws BusinessException {
+        Optional<ReservationEntity> currentReservation = reservationService.findBySessionId(sessionId);
+
+        if (currentReservation.isEmpty()) {
+            String errorMessage = String.format("La réservation avec le session ID '%s' n'existe pas.", sessionId);
+            throw new BusinessException(errorMessage);
+        }
+
+        ReservationEntity patch = new ReservationEntity();
+        patch.setStatus(status);
+
+        ReservationEntity reservationToPatch = reservationService.editReservation(currentReservation.get().getId(), patch);
+
+        return ResponseEntity.status(200).body(new PatchReservationResponse(reservationToPatch));
+    }
+
     @Operation(summary = "Delete a specific reservation.")
     @DeleteMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<DeleteReservationResponse> deleteReservation(@PathVariable("id") Long id) throws BusinessException {
