@@ -24,12 +24,27 @@ public class ReservationModel {
     private Date to;
     private int total_price;
     private int night_number;
+    private String stripe_session_id;
+    private String status;
 
     public ReservationModel() {
         super();
     }
 
-    public ReservationModel(UserModel user, LocationModel location, String reservation_key, int adult_nbr, int child_nbr, int animal_nbr, int vehicle_nbr, Date from, Date to, int total_price, int night_number) {
+    public ReservationModel(
+            UserModel user,
+            LocationModel location,
+            String reservation_key,
+            int adult_nbr,
+            int child_nbr,
+            int animal_nbr,
+            int vehicle_nbr,
+            Date from,
+            Date to,
+            int total_price,
+            int night_number,
+            String stripe_session_id,
+            String status) {
         this.user = user;
         this.location = location;
         this.reservation_key = reservation_key;
@@ -41,6 +56,8 @@ public class ReservationModel {
         this.to = to;
         this.total_price = total_price;
         this.night_number = night_number;
+        this.stripe_session_id = stripe_session_id;
+        this.status = status;
     }
 
     public Long getId() {
@@ -137,6 +154,22 @@ public class ReservationModel {
 
     public void setNight_number(int night_number) {
         this.night_number = night_number;
+    }
+
+    public String getStripe_session_id() {
+        return stripe_session_id;
+    }
+
+    public void setStripe_session_id(String stripe_session_id) {
+        this.stripe_session_id = stripe_session_id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

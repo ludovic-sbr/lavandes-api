@@ -1,5 +1,6 @@
 package com.feliiks.gardons.dtos;
 
+import com.feliiks.gardons.viewmodels.ReservationEntity;
 import lombok.Data;
 
 @Data
@@ -10,4 +11,5 @@ public class PatchReservationRequest {
     int child_nbr;
     int animal_nbr;
     int vehicle_nbr;
+    ReservationEntity.ReservationStatusEnum status;
 }

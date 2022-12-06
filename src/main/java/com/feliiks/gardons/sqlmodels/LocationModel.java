@@ -8,6 +8,7 @@ public class LocationModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String stripeProductId;
     private String description;
     private boolean parking;
     private boolean kitchen;
@@ -28,7 +29,8 @@ public class LocationModel {
         super();
     }
 
-    public LocationModel(String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms, boolean available, int slot_number) {
+    public LocationModel(String stripeProductId, String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms, boolean available, int slot_number) {
+        this.stripeProductId = stripeProductId;
         this.description = description;
         this.parking = parking;
         this.kitchen = kitchen;
@@ -52,6 +54,14 @@ public class LocationModel {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getStripeProductId() {
+        return stripeProductId;
+    }
+
+    public void setStripeProductId(String stripeProductId) {
+        this.stripeProductId = stripeProductId;
     }
 
     public String getDescription() {

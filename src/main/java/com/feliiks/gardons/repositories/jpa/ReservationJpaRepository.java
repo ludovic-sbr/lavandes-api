@@ -15,6 +15,9 @@ public interface ReservationJpaRepository extends JpaRepository<ReservationModel
     @Query("select reservation from ReservationModel reservation where reservation.reservation_key = :reservationKey")
     Optional<ReservationModel> findByReservationKey(@Param("reservationKey") String reservationKey);
 
+    @Query("select reservation from ReservationModel reservation where reservation.stripe_session_id = :sessionId")
+    Optional<ReservationModel> findBySessionId(@Param("sessionId") String sessionId);
+
     @Query("select reservation from ReservationModel reservation where reservation.location = :location")
     List<ReservationModel> findByLocation(@Param("location") LocationModel location);
 

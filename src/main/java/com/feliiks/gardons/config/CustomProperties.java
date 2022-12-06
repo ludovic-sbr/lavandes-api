@@ -16,6 +16,9 @@ public class CustomProperties {
     @Value("${app.jwtIssuer}")
     private String jwtIssuer;
 
+    @Value("${app.stripeSecretKey}")
+    private String stripeSecretKey;
+
     public String getJwtSecret() {
         return jwtSecret;
     }
@@ -30,5 +33,13 @@ public class CustomProperties {
 
     public void setJwtIssuer(String jwtIssuer) {
         this.jwtIssuer = jwtIssuer;
+    }
+
+    public String getStripeSecretKey() {
+        return stripeSecretKey;
+    }
+
+    public void setStripeSecretKey(String stripeSecretKey) {
+        this.stripeSecretKey = stripeSecretKey;
     }
 }

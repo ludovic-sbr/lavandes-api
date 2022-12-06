@@ -2,8 +2,10 @@ package com.feliiks.gardons.implementations;
 
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.LocationRepository;
+import com.feliiks.gardons.services.StripeService;
 import com.feliiks.gardons.viewmodels.LocationEntity;
 import com.feliiks.gardons.services.LocationService;
+import com.stripe.model.Product;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,13 @@ import java.util.Optional;
 @Service
 public class LocationImpl implements LocationService {
     public final LocationRepository locationRepository;
+    public final StripeService stripeService;
 
-    public LocationImpl(LocationRepository locationRepository) {
+    public LocationImpl(
+            LocationRepository locationRepository,
+            StripeService stripeService) {
         this.locationRepository = locationRepository;
+        this.stripeService = stripeService;
     }
 
     @Override
@@ -44,6 +50,16 @@ public class LocationImpl implements LocationService {
         }
 
         LocationEntity newLocation = new LocationEntity();
+
+        Optional<Product> product = stripeService.findProductById(location.getStripeProductId());
+
+        if (product.isEmpty()) {
+            String errorMessage = String.format("Le produit stripe '%s' n'existe pas.", location.getStripeProductId());
+
+            throw new BusinessException(errorMessage);
+        }
+        newLocation.setStripeProductId(location.getStripeProductId());
+
         newLocation.setDescription(location.getDescription());
         newLocation.setParking(location.getParking());
         newLocation.setKitchen(location.getKitchen());
@@ -71,6 +87,18 @@ public class LocationImpl implements LocationService {
             String errorMessage = String.format("La location '%s' n'existe pas.", id);
 
             throw new BusinessException(errorMessage);
+        }
+
+        if (location.getStripeProductId() != null) {
+            Optional<Product> product = stripeService.findProductById(location.getStripeProductId());
+
+            if (product.isEmpty()) {
+                String errorMessage = String.format("Le produit stripe '%s' n'existe pas.", location.getStripeProductId());
+
+                throw new BusinessException(errorMessage);
+            }
+
+            existingLocation.get().setStripeProductId(location.getStripeProductId());
         }
 
         if (location.getDescription() != null) {

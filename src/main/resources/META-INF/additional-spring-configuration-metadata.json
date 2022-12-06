@@ -9,6 +9,11 @@
       "name": "app.jwtIssuer",
       "type": "java.lang.String",
       "description": "Description for app.jwtIssuer."
+    },
+    {
+      "name": "app.stripeSecretKey",
+      "type": "java.lang.String",
+      "description": "Description for app.stripeSecretKey."
     }
   ]
 }
