@@ -171,22 +171,4 @@ public class ReservationModel {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", user=" + user +
-                ", location=" + location +
-                ", reservation_key='" + reservation_key + '\'' +
-                ", adult_nbr=" + adult_nbr +
-                ", child_nbr=" + child_nbr +
-                ", animal_nbr=" + animal_nbr +
-                ", vehicle_nbr=" + vehicle_nbr +
-                ", from=" + from +
-                ", to=" + to +
-                ", night_number=" + night_number +
-                ", total_price=" + total_price +
-                '}';
-    }
 }

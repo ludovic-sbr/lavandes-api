@@ -2,9 +2,9 @@ package com.feliiks.gardons.implementations;
 
 import com.feliiks.gardons.repositories.RoleRepository;
 import com.feliiks.gardons.repositories.UserRepository;
+import com.feliiks.gardons.services.RoleService;
 import com.feliiks.gardons.viewmodels.RoleEntity;
 import com.feliiks.gardons.viewmodels.UserEntity;
-import com.feliiks.gardons.services.RoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 

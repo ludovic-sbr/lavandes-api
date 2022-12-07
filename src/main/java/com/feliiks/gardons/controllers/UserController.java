@@ -3,9 +3,9 @@ package com.feliiks.gardons.controllers;
 import com.feliiks.gardons.converters.UserConverter;
 import com.feliiks.gardons.dtos.*;
 import com.feliiks.gardons.exceptions.BusinessException;
+import com.feliiks.gardons.services.UserService;
 import com.feliiks.gardons.viewmodels.ReservationEntity;
 import com.feliiks.gardons.viewmodels.UserEntity;
-import com.feliiks.gardons.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @Operation(summary = "List all reservations of current user.")
-    @GetMapping(path = "/me/reservation", produces = "application/json")
+    @GetMapping(path = "/reservation", produces = "application/json")
     public ResponseEntity<GetReservationsResponse> getMyReservations() throws BusinessException {
         UserEntity user = userConverter.getLoggedUser();
 
@@ -91,6 +91,23 @@ public class UserController {
         UserEntity user = userConverter.convertToEntity(postUserRequest);
 
         UserEntity savedUser = userService.register(user);
+
+        return ResponseEntity.status(201).body(new PostUserResponse(savedUser));
+    }
+
+    @Operation(summary = "Complete current user informations.")
+    @PostMapping(path = "/complete", produces = "application/json")
+    public ResponseEntity<PostUserResponse> userComplete(@RequestBody CompleteUserRequest completeUserRequest) throws BusinessException {
+        if (completeUserRequest.getFirstname() == null || completeUserRequest.getLastname() == null || completeUserRequest.getTel() == null) {
+            throw new BusinessException("Des informations sont manquantes pour compléter l'utilisateur.");
+        }
+
+        UserEntity user = userConverter.getLoggedUser();
+        UserEntity patch = userConverter.convertToEntity(completeUserRequest);
+
+        patch.setIs_user_completed(true);
+
+        UserEntity savedUser = userService.editUser(user.getId(), patch);
 
         return ResponseEntity.status(201).body(new PostUserResponse(savedUser));
     }

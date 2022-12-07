@@ -9,10 +9,20 @@ public class UserEntity {
     private String tel;
     private RoleEntity role;
     private String google_id;
+    private Boolean is_user_completed;
 
-    public UserEntity() {}
+    public UserEntity() {
+    }
 
-    public UserEntity(String firstname, String lastname, String email, String password, String tel, RoleEntity role, String google_id) {
+    public UserEntity(
+            String firstname,
+            String lastname,
+            String email,
+            String password,
+            String tel,
+            RoleEntity role,
+            String google_id,
+            boolean is_user_completed) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
@@ -20,6 +30,7 @@ public class UserEntity {
         this.tel = tel;
         this.role = role;
         this.google_id = google_id;
+        this.is_user_completed = is_user_completed;
     }
 
     public Long getId() {
@@ -84,5 +95,13 @@ public class UserEntity {
 
     public void setGoogle_id(String google_id) {
         this.google_id = google_id;
+    }
+
+    public Boolean getIs_user_completed() {
+        return is_user_completed;
+    }
+
+    public void setIs_user_completed(Boolean is_user_completed) {
+        this.is_user_completed = is_user_completed;
     }
 }
