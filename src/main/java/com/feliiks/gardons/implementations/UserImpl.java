@@ -2,11 +2,11 @@ package com.feliiks.gardons.implementations;
 
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.UserRepository;
+import com.feliiks.gardons.services.RoleService;
+import com.feliiks.gardons.services.UserService;
 import com.feliiks.gardons.viewmodels.ReservationEntity;
 import com.feliiks.gardons.viewmodels.RoleEntity;
 import com.feliiks.gardons.viewmodels.UserEntity;
-import com.feliiks.gardons.services.RoleService;
-import com.feliiks.gardons.services.UserService;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -86,6 +86,8 @@ public class UserImpl implements UserService {
         Optional<RoleEntity> role = roleService.findById(1L);
         role.ifPresent(newUser::setRole);
 
+        newUser.setIs_user_completed(false);
+
         userRepository.save(newUser);
 
         return newUser;
@@ -125,7 +127,7 @@ public class UserImpl implements UserService {
             existingUser.get().setTel(user.getTel());
         }
 
-        if (user.getRole().getName() != null) {
+        if (user.getRole() != null && user.getRole().getName() != null) {
             Optional<RoleEntity> role = roleService.findByName(user.getRole().getName());
 
             if (role.isEmpty()) {
@@ -136,6 +138,8 @@ public class UserImpl implements UserService {
 
             existingUser.get().setRole(role.get());
         }
+
+        existingUser.get().setIs_user_completed(user.getIs_user_completed());
 
         return userRepository.save(existingUser.get());
     }

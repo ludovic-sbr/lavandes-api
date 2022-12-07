@@ -11,6 +11,8 @@ import java.util.Optional;
 @Service
 public interface StripeService {
     Optional<Product> findProductById(String productId) throws BusinessException;
+
     Session createCheckoutSession(CheckoutSessionRequest checkoutSessionRequest) throws BusinessException;
+
     Session getCheckoutSession(String sessionId) throws BusinessException;
 }

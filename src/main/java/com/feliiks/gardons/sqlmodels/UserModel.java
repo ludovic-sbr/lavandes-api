@@ -1,7 +1,7 @@
 package com.feliiks.gardons.sqlmodels;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "users")
@@ -10,35 +10,32 @@ public class UserModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-
-    @Column(nullable = false)
     private String firstname;
-
-    @Column(nullable = false)
     private String lastname;
-
-    @Email
-    @Column(nullable = false)
+    @NotBlank
     private String email;
-
-    @Column
     private String password;
-
-    @Column(nullable = false)
     private String tel;
-
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id", nullable = false)
     private RoleModel role;
-
-    @Column
     private String google_id;
+    @NotBlank
+    private boolean is_user_completed;
 
     public UserModel() {
         super();
     }
 
-    public UserModel(String firstname, String lastname, String email, String password, String tel, RoleModel role, String google_id) {
+    public UserModel(
+            String firstname,
+            String lastname,
+            String email,
+            String password,
+            String tel,
+            RoleModel role,
+            String google_id,
+            boolean is_user_completed) {
         super();
         this.firstname = firstname;
         this.lastname = lastname;
@@ -47,6 +44,7 @@ public class UserModel {
         this.tel = tel;
         this.role = role;
         this.google_id = google_id;
+        this.is_user_completed = is_user_completed;
     }
 
     public Long getId() {
@@ -113,15 +111,11 @@ public class UserModel {
         this.google_id = google_id;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", email='" + email + '\'' +
-                ", tel='" + tel + '\'' +
-                ", google_id='" + google_id + '\'' +
-                '}';
+    public boolean isIs_user_completed() {
+        return is_user_completed;
+    }
+
+    public void setIs_user_completed(boolean is_user_completed) {
+        this.is_user_completed = is_user_completed;
     }
 }

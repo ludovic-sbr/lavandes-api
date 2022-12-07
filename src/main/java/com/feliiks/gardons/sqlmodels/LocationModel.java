@@ -183,26 +183,4 @@ public class LocationModel {
     public void setSlot_number(int slot_number) {
         this.slot_number = slot_number;
     }
-
-    @Override
-    public String toString() {
-        return "Location{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", parking=" + parking +
-                ", kitchen=" + kitchen +
-                ", wifi=" + wifi +
-                ", sanitary=" + sanitary +
-                ", heater=" + heater +
-                ", air_conditioner=" + air_conditioner +
-                ", terrace=" + terrace +
-                ", barbecue=" + barbecue +
-                ", surface=" + surface +
-                ", max_persons=" + max_persons +
-                ", price_per_night=" + price_per_night +
-                ", bedrooms=" + bedrooms +
-                ", available=" + available +
-                ", slot_number=" + slot_number +
-                '}';
-    }
 }

@@ -19,7 +19,8 @@ public class LocationEntity {
     private boolean available;
     private int slot_number;
 
-    public LocationEntity() {}
+    public LocationEntity() {
+    }
 
     public LocationEntity(String stripeProductId, String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms, boolean available, int slot_number) {
         this.stripeProductId = stripeProductId;

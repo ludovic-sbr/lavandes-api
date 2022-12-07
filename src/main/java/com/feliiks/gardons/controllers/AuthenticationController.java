@@ -3,14 +3,17 @@ package com.feliiks.gardons.controllers;
 import com.feliiks.gardons.converters.UserConverter;
 import com.feliiks.gardons.dtos.LoginUserRequest;
 import com.feliiks.gardons.dtos.LoginUserResponse;
-import com.feliiks.gardons.sqlmodels.TokenModel;
 import com.feliiks.gardons.exceptions.AuthenticationException;
-import com.feliiks.gardons.viewmodels.UserEntity;
 import com.feliiks.gardons.services.AuthenticationService;
+import com.feliiks.gardons.sqlmodels.TokenModel;
+import com.feliiks.gardons.viewmodels.UserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Authentication")
 @RestController
@@ -22,7 +25,7 @@ public class AuthenticationController {
     public AuthenticationController(
             AuthenticationService authenticationService,
             UserConverter userConverter
-            ) {
+    ) {
         this.authenticationService = authenticationService;
         this.userConverter = userConverter;
     }

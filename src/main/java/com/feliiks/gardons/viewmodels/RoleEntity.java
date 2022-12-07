@@ -4,7 +4,8 @@ public class RoleEntity {
     private Long id;
     private String name;
 
-    public RoleEntity() {}
+    public RoleEntity() {
+    }
 
     public RoleEntity(String name) {
         this.name = name;

@@ -19,18 +19,12 @@ import java.util.Optional;
 
 @Service
 public class StripeImpl implements StripeService {
-    @Value("${app.stripeSecretKey}")
-    private String stripeSecretKey;
-    private final StripeConverter stripeConverter;
     public final UserService userService;
-
+    private final StripeConverter stripeConverter;
     String failedUrl = "http://localhost:3000/payment/canceled?session_id={CHECKOUT_SESSION_ID}";
     String successUrl = "http://localhost:3000/payment/success?session_id={CHECKOUT_SESSION_ID}";
-
-    @PostConstruct
-    public void init() {
-        Stripe.apiKey = stripeSecretKey;
-    }
+    @Value("${app.stripeSecretKey}")
+    private String stripeSecretKey;
 
     public StripeImpl(
             StripeConverter stripeConverter,
@@ -39,13 +33,18 @@ public class StripeImpl implements StripeService {
         this.userService = userService;
     }
 
+    @PostConstruct
+    public void init() {
+        Stripe.apiKey = stripeSecretKey;
+    }
+
     public Optional<Product> findProductById(String productId) throws BusinessException {
         try {
-           Product product =  Product.retrieve(productId);
+            Product product = Product.retrieve(productId);
 
-           if (product == null) return Optional.empty();
+            if (product == null) return Optional.empty();
 
-           return Optional.of(product);
+            return Optional.of(product);
         } catch (StripeException e) {
             String errorMessage = String.format("Le produit stripe '%s' n'existe pas.", productId);
 

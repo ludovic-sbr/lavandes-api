@@ -1,9 +1,9 @@
 package com.feliiks.gardons.implementations;
 
-import com.feliiks.gardons.sqlmodels.TokenModel;
 import com.feliiks.gardons.exceptions.TokenValidationException;
-import com.feliiks.gardons.viewmodels.UserEntity;
 import com.feliiks.gardons.services.TokenService;
+import com.feliiks.gardons.sqlmodels.TokenModel;
+import com.feliiks.gardons.viewmodels.UserEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;

@@ -58,7 +58,7 @@ public class ReservationRepository {
         return Optional.of(reservationConverter.convertToEntity(reservation.get()));
     }
 
-    public List<ReservationEntity> findByLocation (LocationEntity location) {
+    public List<ReservationEntity> findByLocation(LocationEntity location) {
         LocationModel mappedLocation = locationConverter.convertToModel(location);
         List<ReservationModel> reservations = reservationJpaRepository.findByLocation(mappedLocation);
 

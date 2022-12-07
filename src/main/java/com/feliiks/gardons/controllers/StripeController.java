@@ -1,8 +1,8 @@
 package com.feliiks.gardons.controllers;
 
 import com.feliiks.gardons.converters.StripeConverter;
-import com.feliiks.gardons.dtos.CheckoutSessionResponse;
 import com.feliiks.gardons.dtos.CheckoutSessionRequest;
+import com.feliiks.gardons.dtos.CheckoutSessionResponse;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.ReservationService;
 import com.feliiks.gardons.services.StripeService;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/stripe")
 public class StripeController {
     public final StripeService stripeService;
-    private final StripeConverter stripeConverter;
     public final ReservationService reservationService;
+    private final StripeConverter stripeConverter;
 
     public StripeController(
             StripeService stripeService,
@@ -30,7 +30,7 @@ public class StripeController {
     }
 
     @Operation(summary = "Get a specific stripe session.")
-    @GetMapping(path="/checkout-session/{sessionId}", produces = "application/json")
+    @GetMapping(path = "/checkout-session/{sessionId}", produces = "application/json")
     public ResponseEntity<CheckoutSessionResponse> findCheckoutSessionById(@PathVariable("sessionId") String sessionId) throws BusinessException {
         Session checkoutSession = stripeService.getCheckoutSession(sessionId);
 
@@ -38,7 +38,7 @@ public class StripeController {
     }
 
     @Operation(summary = "Create new charge.")
-    @PostMapping(path="/checkout-session", produces = "application/json")
+    @PostMapping(path = "/checkout-session", produces = "application/json")
     public ResponseEntity<CheckoutSessionResponse> charge(CheckoutSessionRequest checkoutSessionRequest) throws BusinessException {
         Session checkoutSession = stripeService.createCheckoutSession(checkoutSessionRequest);
 
