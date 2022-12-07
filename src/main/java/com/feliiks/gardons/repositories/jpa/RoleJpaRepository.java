@@ -1,6 +1,6 @@
 package com.feliiks.gardons.repositories.jpa;
 
-import com.feliiks.gardons.sqlmodels.RoleModel;
+import com.feliiks.gardons.models.RoleModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

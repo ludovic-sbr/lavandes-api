@@ -1,4 +1,4 @@
-package com.feliiks.gardons.viewmodels;
+package com.feliiks.gardons.entities;
 
 public class UserEntity {
     private Long id;

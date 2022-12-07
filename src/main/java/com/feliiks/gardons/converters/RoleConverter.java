@@ -1,7 +1,7 @@
 package com.feliiks.gardons.converters;
 
-import com.feliiks.gardons.sqlmodels.RoleModel;
-import com.feliiks.gardons.viewmodels.RoleEntity;
+import com.feliiks.gardons.entities.RoleEntity;
+import com.feliiks.gardons.models.RoleModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

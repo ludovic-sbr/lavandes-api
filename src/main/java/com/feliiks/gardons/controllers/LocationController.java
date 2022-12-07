@@ -2,9 +2,9 @@ package com.feliiks.gardons.controllers;
 
 import com.feliiks.gardons.converters.LocationConverter;
 import com.feliiks.gardons.dtos.*;
+import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.LocationService;
-import com.feliiks.gardons.viewmodels.LocationEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;

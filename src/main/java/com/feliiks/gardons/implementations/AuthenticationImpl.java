@@ -1,12 +1,12 @@
 package com.feliiks.gardons.implementations;
 
+import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.exceptions.AuthenticationException;
 import com.feliiks.gardons.exceptions.BusinessException;
+import com.feliiks.gardons.models.TokenModel;
 import com.feliiks.gardons.services.AuthenticationService;
 import com.feliiks.gardons.services.TokenService;
 import com.feliiks.gardons.services.UserService;
-import com.feliiks.gardons.sqlmodels.TokenModel;
-import com.feliiks.gardons.viewmodels.UserEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,9 @@
 package com.feliiks.gardons.repositories;
 
 import com.feliiks.gardons.converters.LocationConverter;
+import com.feliiks.gardons.entities.LocationEntity;
+import com.feliiks.gardons.models.LocationModel;
 import com.feliiks.gardons.repositories.jpa.LocationJpaRepository;
-import com.feliiks.gardons.sqlmodels.LocationModel;
-import com.feliiks.gardons.viewmodels.LocationEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

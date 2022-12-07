@@ -2,11 +2,11 @@ package com.feliiks.gardons.repositories;
 
 import com.feliiks.gardons.converters.LocationConverter;
 import com.feliiks.gardons.converters.ReservationConverter;
+import com.feliiks.gardons.entities.LocationEntity;
+import com.feliiks.gardons.entities.ReservationEntity;
+import com.feliiks.gardons.models.LocationModel;
+import com.feliiks.gardons.models.ReservationModel;
 import com.feliiks.gardons.repositories.jpa.ReservationJpaRepository;
-import com.feliiks.gardons.sqlmodels.LocationModel;
-import com.feliiks.gardons.sqlmodels.ReservationModel;
-import com.feliiks.gardons.viewmodels.LocationEntity;
-import com.feliiks.gardons.viewmodels.ReservationEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.feliiks.gardons.repositories.jpa;
 
-import com.feliiks.gardons.sqlmodels.ReservationModel;
-import com.feliiks.gardons.sqlmodels.UserModel;
+import com.feliiks.gardons.models.ReservationModel;
+import com.feliiks.gardons.models.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

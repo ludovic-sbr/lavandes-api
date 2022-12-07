@@ -1,8 +1,8 @@
 package com.feliiks.gardons.security;
 
+import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.services.TokenService;
 import com.feliiks.gardons.services.UserService;
-import com.feliiks.gardons.viewmodels.UserEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

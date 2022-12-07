@@ -2,10 +2,10 @@ package com.feliiks.gardons.implementations;
 
 import com.feliiks.gardons.converters.StripeConverter;
 import com.feliiks.gardons.dtos.CheckoutSessionRequest;
+import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.StripeService;
 import com.feliiks.gardons.services.UserService;
-import com.feliiks.gardons.viewmodels.UserEntity;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Product;

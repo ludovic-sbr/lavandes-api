@@ -1,15 +1,16 @@
 package com.feliiks.gardons.implementations;
 
 import com.feliiks.gardons.dtos.CheckoutSessionRequest;
+import com.feliiks.gardons.entities.LocationEntity;
+import com.feliiks.gardons.entities.ReservationEntity;
+import com.feliiks.gardons.entities.ReservationStatusEnum;
+import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.ReservationRepository;
 import com.feliiks.gardons.services.LocationService;
 import com.feliiks.gardons.services.ReservationService;
 import com.feliiks.gardons.services.StripeService;
 import com.feliiks.gardons.services.UserService;
-import com.feliiks.gardons.viewmodels.LocationEntity;
-import com.feliiks.gardons.viewmodels.ReservationEntity;
-import com.feliiks.gardons.viewmodels.UserEntity;
 import com.stripe.model.checkout.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -58,7 +59,7 @@ public class ReservationImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationEntity> findByStatus(ReservationEntity.ReservationStatusEnum status) {
+    public List<ReservationEntity> findByStatus(ReservationStatusEnum status) {
         List<ReservationEntity> reservations = this.findAll();
 
         return reservations.stream().filter(elt -> elt.getStatus() == status).toList();
@@ -100,7 +101,7 @@ public class ReservationImpl implements ReservationService {
         List<ReservationEntity> completeReservations =
                 existingReservations
                         .stream()
-                        .filter(elt -> Objects.equals(elt.getStatus(), ReservationEntity.ReservationStatusEnum.COMPLETE))
+                        .filter(elt -> Objects.equals(elt.getStatus(), ReservationStatusEnum.COMPLETE))
                         .toList();
 
         long conflictualReservations =
@@ -137,7 +138,7 @@ public class ReservationImpl implements ReservationService {
         newReservation.setNight_number(nightNumber);
         newReservation.setTotal_price(this.totalPrice(location.get().getPrice_per_night(), nightNumber));
         newReservation.setStripe_session_id(stripeSession.getId());
-        newReservation.setStatus(ReservationEntity.ReservationStatusEnum.OPEN);
+        newReservation.setStatus(ReservationStatusEnum.OPEN);
 
         return reservationRepository.save(newReservation);
     }
@@ -177,7 +178,7 @@ public class ReservationImpl implements ReservationService {
             List<ReservationEntity> completeReservations =
                     existingReservations
                             .stream()
-                            .filter(elt -> Objects.equals(elt.getStatus(), ReservationEntity.ReservationStatusEnum.COMPLETE))
+                            .filter(elt -> Objects.equals(elt.getStatus(), ReservationStatusEnum.COMPLETE))
                             .toList();
 
             long conflictualReservations =

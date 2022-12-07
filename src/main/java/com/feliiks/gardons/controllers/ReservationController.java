@@ -2,9 +2,10 @@ package com.feliiks.gardons.controllers;
 
 import com.feliiks.gardons.converters.ReservationConverter;
 import com.feliiks.gardons.dtos.*;
+import com.feliiks.gardons.entities.ReservationEntity;
+import com.feliiks.gardons.entities.ReservationStatusEnum;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.ReservationService;
-import com.feliiks.gardons.viewmodels.ReservationEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +70,7 @@ public class ReservationController {
 
     @Operation(summary = "Update the status of a specific reservation.")
     @PatchMapping(path = "/{sessionId}/status", produces = "application/json")
-    public ResponseEntity<PatchReservationResponse> editReservation(@PathVariable("sessionId") String sessionId, @RequestBody ReservationEntity.ReservationStatusEnum status) throws BusinessException {
+    public ResponseEntity<PatchReservationResponse> editReservation(@PathVariable("sessionId") String sessionId, @RequestBody ReservationStatusEnum status) throws BusinessException {
         Optional<ReservationEntity> currentReservation = reservationService.findBySessionId(sessionId);
 
         if (currentReservation.isEmpty()) {

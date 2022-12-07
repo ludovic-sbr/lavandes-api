@@ -1,10 +1,10 @@
 package com.feliiks.gardons.implementations;
 
+import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.LocationRepository;
 import com.feliiks.gardons.services.LocationService;
 import com.feliiks.gardons.services.StripeService;
-import com.feliiks.gardons.viewmodels.LocationEntity;
 import com.stripe.model.Product;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;

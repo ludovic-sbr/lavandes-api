@@ -1,8 +1,8 @@
 package com.feliiks.gardons.services;
 
+import com.feliiks.gardons.entities.ReservationEntity;
+import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
-import com.feliiks.gardons.viewmodels.ReservationEntity;
-import com.feliiks.gardons.viewmodels.UserEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
