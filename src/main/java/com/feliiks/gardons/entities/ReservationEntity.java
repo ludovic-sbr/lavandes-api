@@ -1,4 +1,4 @@
-package com.feliiks.gardons.viewmodels;
+package com.feliiks.gardons.entities;
 
 import java.util.Date;
 
@@ -17,6 +17,7 @@ public class ReservationEntity {
     private int night_number;
     private String stripe_session_id;
     private ReservationStatusEnum status;
+
     public ReservationEntity() {
     }
 
@@ -159,11 +160,5 @@ public class ReservationEntity {
 
     public void setStatus(ReservationStatusEnum status) {
         this.status = status;
-    }
-
-    public enum ReservationStatusEnum {
-        OPEN,
-        COMPLETE,
-        CANCELED
     }
 }

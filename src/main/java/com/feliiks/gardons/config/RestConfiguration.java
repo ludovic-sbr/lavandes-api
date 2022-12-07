@@ -1,8 +1,8 @@
 package com.feliiks.gardons.config;
 
-import com.feliiks.gardons.sqlmodels.LocationModel;
-import com.feliiks.gardons.sqlmodels.ReservationModel;
-import com.feliiks.gardons.sqlmodels.UserModel;
+import com.feliiks.gardons.models.LocationModel;
+import com.feliiks.gardons.models.ReservationModel;
+import com.feliiks.gardons.models.UserModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

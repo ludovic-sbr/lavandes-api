@@ -1,6 +1,6 @@
 package com.feliiks.gardons.dtos;
 
-import com.feliiks.gardons.viewmodels.LocationEntity;
+import com.feliiks.gardons.entities.LocationEntity;
 
 public class PostLocationResponse {
     private LocationEntity location;

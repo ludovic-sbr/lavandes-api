@@ -1,6 +1,6 @@
 package com.feliiks.gardons.services;
 
-import com.feliiks.gardons.viewmodels.RoleEntity;
+import com.feliiks.gardons.entities.RoleEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

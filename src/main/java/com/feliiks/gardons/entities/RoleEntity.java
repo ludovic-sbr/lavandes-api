@@ -1,20 +1,13 @@
-package com.feliiks.gardons.sqlmodels;
+package com.feliiks.gardons.entities;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "roles")
-public class RoleModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+public class RoleEntity {
     private Long id;
     private String name;
 
-    public RoleModel() {
+    public RoleEntity() {
     }
 
-    public RoleModel(String name) {
+    public RoleEntity(String name) {
         this.name = name;
     }
 

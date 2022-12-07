@@ -2,8 +2,8 @@ package com.feliiks.gardons.converters;
 
 import com.feliiks.gardons.dtos.PatchLocationRequest;
 import com.feliiks.gardons.dtos.PostLocationRequest;
-import com.feliiks.gardons.sqlmodels.LocationModel;
-import com.feliiks.gardons.viewmodels.LocationEntity;
+import com.feliiks.gardons.entities.LocationEntity;
+import com.feliiks.gardons.models.LocationModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

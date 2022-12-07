@@ -1,8 +1,9 @@
 package com.feliiks.gardons.services;
 
+import com.feliiks.gardons.entities.LocationEntity;
+import com.feliiks.gardons.entities.ReservationEntity;
+import com.feliiks.gardons.entities.ReservationStatusEnum;
 import com.feliiks.gardons.exceptions.BusinessException;
-import com.feliiks.gardons.viewmodels.LocationEntity;
-import com.feliiks.gardons.viewmodels.ReservationEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface ReservationService {
 
     Optional<ReservationEntity> findByReservationKey(String reservationKey);
 
-    List<ReservationEntity> findByStatus(ReservationEntity.ReservationStatusEnum status);
+    List<ReservationEntity> findByStatus(ReservationStatusEnum status);
 
     List<ReservationEntity> findByLocation(LocationEntity location);
 

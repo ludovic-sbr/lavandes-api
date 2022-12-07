@@ -1,6 +1,6 @@
 package com.feliiks.gardons.dtos;
 
-import com.feliiks.gardons.viewmodels.UserEntity;
+import com.feliiks.gardons.entities.UserEntity;
 
 public class GetUserResponse {
     private UserEntity user;

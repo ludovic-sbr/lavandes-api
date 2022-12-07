@@ -1,9 +1,9 @@
 package com.feliiks.gardons.repositories;
 
 import com.feliiks.gardons.converters.RoleConverter;
+import com.feliiks.gardons.entities.RoleEntity;
+import com.feliiks.gardons.models.RoleModel;
 import com.feliiks.gardons.repositories.jpa.RoleJpaRepository;
-import com.feliiks.gardons.sqlmodels.RoleModel;
-import com.feliiks.gardons.viewmodels.RoleEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

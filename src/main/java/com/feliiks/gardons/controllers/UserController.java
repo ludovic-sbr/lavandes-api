@@ -2,10 +2,10 @@ package com.feliiks.gardons.controllers;
 
 import com.feliiks.gardons.converters.UserConverter;
 import com.feliiks.gardons.dtos.*;
+import com.feliiks.gardons.entities.ReservationEntity;
+import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.UserService;
-import com.feliiks.gardons.viewmodels.ReservationEntity;
-import com.feliiks.gardons.viewmodels.UserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;

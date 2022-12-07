@@ -2,11 +2,11 @@ package com.feliiks.gardons.repositories;
 
 import com.feliiks.gardons.converters.ReservationConverter;
 import com.feliiks.gardons.converters.UserConverter;
+import com.feliiks.gardons.entities.ReservationEntity;
+import com.feliiks.gardons.entities.UserEntity;
+import com.feliiks.gardons.models.ReservationModel;
+import com.feliiks.gardons.models.UserModel;
 import com.feliiks.gardons.repositories.jpa.UserJpaRepository;
-import com.feliiks.gardons.sqlmodels.ReservationModel;
-import com.feliiks.gardons.sqlmodels.UserModel;
-import com.feliiks.gardons.viewmodels.ReservationEntity;
-import com.feliiks.gardons.viewmodels.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.feliiks.gardons.dtos;
 
-import com.feliiks.gardons.viewmodels.ReservationEntity;
+import com.feliiks.gardons.entities.ReservationEntity;
 
 public class PatchReservationResponse {
     private ReservationEntity reservation;

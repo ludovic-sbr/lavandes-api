@@ -1,4 +1,4 @@
-package com.feliiks.gardons.sqlmodels;
+package com.feliiks.gardons.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

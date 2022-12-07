@@ -2,10 +2,10 @@ package com.feliiks.gardons.converters;
 
 import com.feliiks.gardons.dtos.PatchReservationRequest;
 import com.feliiks.gardons.dtos.PostReservationRequest;
-import com.feliiks.gardons.sqlmodels.ReservationModel;
-import com.feliiks.gardons.viewmodels.LocationEntity;
-import com.feliiks.gardons.viewmodels.ReservationEntity;
-import com.feliiks.gardons.viewmodels.UserEntity;
+import com.feliiks.gardons.entities.LocationEntity;
+import com.feliiks.gardons.entities.ReservationEntity;
+import com.feliiks.gardons.entities.UserEntity;
+import com.feliiks.gardons.models.ReservationModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

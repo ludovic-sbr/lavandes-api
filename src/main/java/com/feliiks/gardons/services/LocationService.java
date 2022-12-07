@@ -1,7 +1,7 @@
 package com.feliiks.gardons.services;
 
+import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
-import com.feliiks.gardons.viewmodels.LocationEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
