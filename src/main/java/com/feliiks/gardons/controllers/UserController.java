@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Tag(name = "User")
@@ -89,6 +90,10 @@ public class UserController {
     @PostMapping(produces = "application/json")
     public ResponseEntity<PostUserResponse> saveNewUser(@RequestBody PostUserRequest postUserRequest) throws BusinessException {
         UserEntity user = userConverter.convertToEntity(postUserRequest);
+
+        if (postUserRequest.getPassword() != null && !Objects.equals(postUserRequest.getPassword(), postUserRequest.getRepeat_password())) {
+            throw new BusinessException("Les mots de passe ne correspondent pas.");
+        }
 
         UserEntity savedUser = userService.register(user);
 

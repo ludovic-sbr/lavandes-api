@@ -8,6 +8,7 @@ public class PostUserRequest {
     String lastname;
     String email;
     String password;
+    String repeat_password;
     String tel;
     String google_id;
 }
