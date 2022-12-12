@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class UserImpl implements UserService {
     public final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
     public UserImpl(
             UserRepository userRepository,
@@ -73,6 +75,10 @@ public class UserImpl implements UserService {
             throw new BusinessException(errorMessage);
         }
 
+        if (!patternMatches(user.getEmail(), emailRegex)) {
+            throw new BusinessException("Adresse email incorrecte.");
+        }
+
         UserEntity newUser = new UserEntity();
         newUser.setFirstname(user.getFirstname());
         newUser.setLastname(user.getLastname());
@@ -111,6 +117,10 @@ public class UserImpl implements UserService {
 
         if (user.getEmail() != null) {
             Optional<UserEntity> userExists = findByEmail(user.getEmail());
+
+            if (!patternMatches(user.getEmail(), emailRegex)) {
+                throw new BusinessException("Adresse email incorrecte.");
+            }
 
             if (userExists.isPresent()) {
                 String errorMessage = String.format("L'adresse email '%s' n'est pas disponible.", user.getEmail());
@@ -153,5 +163,11 @@ public class UserImpl implements UserService {
         } catch (EmptyResultDataAccessException err) {
             return Optional.empty();
         }
+    }
+
+    public static boolean patternMatches(String string, String regexPattern) {
+        return Pattern.compile(regexPattern)
+                .matcher(string)
+                .matches();
     }
 }
