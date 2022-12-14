@@ -6,6 +6,8 @@ import com.feliiks.gardons.entities.ReservationEntity;
 import com.feliiks.gardons.entities.ReservationStatusEnum;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.ReservationService;
+import com.feliiks.gardons.services.StripeService;
+import com.stripe.model.checkout.Session;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +22,16 @@ import java.util.Optional;
 public class ReservationController {
 
     public final ReservationService reservationService;
+    public final StripeService stripeService;
     public final ReservationConverter reservationConverter;
 
     public ReservationController(
             ReservationService reservationService,
-            ReservationConverter reservationConverter) {
+            ReservationConverter reservationConverter,
+            StripeService stripeService) {
         this.reservationService = reservationService;
         this.reservationConverter = reservationConverter;
+        this.stripeService = stripeService;
     }
 
     @Operation(summary = "List all reservations.")
@@ -55,8 +60,9 @@ public class ReservationController {
     public ResponseEntity<PostReservationResponse> saveNewReservation(@RequestBody PostReservationRequest postReservationRequest) throws BusinessException {
         ReservationEntity reservation = reservationConverter.convertToEntity(postReservationRequest);
         ReservationEntity reservationToSave = reservationService.create(reservation);
+        Session checkoutSession = stripeService.getCheckoutSession(reservationToSave.getStripe_session_id());
 
-        return ResponseEntity.status(201).body(new PostReservationResponse(reservationToSave));
+        return ResponseEntity.status(201).body(new PostReservationResponse(reservationToSave, checkoutSession.getUrl()));
     }
 
     @Operation(summary = "Partial update a specific reservation.")
