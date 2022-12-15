@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class PostLocationRequest {
+    String name;
     String stripeProductId;
     String description;
     Boolean parking;

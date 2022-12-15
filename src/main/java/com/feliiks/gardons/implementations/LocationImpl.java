@@ -60,6 +60,7 @@ public class LocationImpl implements LocationService {
         }
         newLocation.setStripeProductId(location.getStripeProductId());
 
+        newLocation.setName(location.getName());
         newLocation.setDescription(location.getDescription());
         newLocation.setParking(location.getParking());
         newLocation.setKitchen(location.getKitchen());
@@ -99,6 +100,10 @@ public class LocationImpl implements LocationService {
             }
 
             existingLocation.get().setStripeProductId(location.getStripeProductId());
+        }
+
+        if (location.getName() != null) {
+            existingLocation.get().setName(location.getName());
         }
 
         if (location.getDescription() != null) {
