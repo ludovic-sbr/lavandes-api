@@ -1,6 +1,5 @@
 package com.feliiks.gardons.controllers;
 
-import com.feliiks.gardons.converters.StripeConverter;
 import com.feliiks.gardons.dtos.CheckoutSessionRequest;
 import com.feliiks.gardons.dtos.CheckoutSessionResponse;
 import com.feliiks.gardons.exceptions.BusinessException;
@@ -18,14 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class StripeController {
     public final StripeService stripeService;
     public final ReservationService reservationService;
-    private final StripeConverter stripeConverter;
 
     public StripeController(
             StripeService stripeService,
-            StripeConverter stripeConverter,
             ReservationService reservationService) {
         this.stripeService = stripeService;
-        this.stripeConverter = stripeConverter;
         this.reservationService = reservationService;
     }
 
@@ -39,7 +35,7 @@ public class StripeController {
 
     @Operation(summary = "Create new charge.")
     @PostMapping(path = "/checkout-session", produces = "application/json")
-    public ResponseEntity<CheckoutSessionResponse> charge(CheckoutSessionRequest checkoutSessionRequest) throws BusinessException {
+    public ResponseEntity<CheckoutSessionResponse> charge(@RequestBody CheckoutSessionRequest checkoutSessionRequest) throws BusinessException {
         Session checkoutSession = stripeService.createCheckoutSession(checkoutSessionRequest);
 
         return ResponseEntity.status(200).body(new CheckoutSessionResponse(checkoutSession.getUrl()));
