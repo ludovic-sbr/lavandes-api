@@ -8,6 +8,5 @@ public class PatchUserRequest {
     String lastname;
     String email;
     String password;
-    String tel;
     String roleName;
 }

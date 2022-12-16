@@ -139,6 +139,8 @@ public class ReservationImpl implements ReservationService {
         newReservation.setTotal_price(this.totalPrice(location.get().getPrice_per_night(), nightNumber));
         newReservation.setStripe_session_id(stripeSession.getId());
         newReservation.setStatus(ReservationStatusEnum.OPEN);
+        newReservation.setUser_contact(null);
+        newReservation.setUser_comment(null);
 
         return reservationRepository.save(newReservation);
     }
@@ -214,6 +216,14 @@ public class ReservationImpl implements ReservationService {
 
         if (reservation.getStatus() != null) {
             existingReservation.get().setStatus((reservation.getStatus()));
+        }
+
+        if (reservation.getUser_contact() != null) {
+            existingReservation.get().setUser_contact(reservation.getUser_contact());
+        }
+
+        if (reservation.getUser_comment() != null) {
+            existingReservation.get().setUser_comment((reservation.getUser_comment()));
         }
 
         return reservationRepository.save(existingReservation.get());

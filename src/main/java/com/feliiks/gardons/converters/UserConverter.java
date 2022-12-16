@@ -33,7 +33,6 @@ public class UserConverter {
             elt.skip(UserEntity::setId);
             elt.skip(UserEntity::setFirstname);
             elt.skip(UserEntity::setLastname);
-            elt.skip(UserEntity::setTel);
             elt.skip(UserEntity::setRole);
             elt.skip(UserEntity::setIs_user_completed);
         });

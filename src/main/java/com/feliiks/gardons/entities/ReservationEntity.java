@@ -17,6 +17,8 @@ public class ReservationEntity {
     private int night_number;
     private String stripe_session_id;
     private ReservationStatusEnum status;
+    private String user_contact;
+    private String user_comment;
 
     public ReservationEntity() {
     }
@@ -34,7 +36,9 @@ public class ReservationEntity {
             int total_price,
             int night_number,
             String stripe_session_id,
-            ReservationStatusEnum status) {
+            ReservationStatusEnum status,
+            String user_contact,
+            String user_comment) {
         this.user = user;
         this.location = location;
         this.reservation_key = reservation_key;
@@ -48,6 +52,8 @@ public class ReservationEntity {
         this.night_number = night_number;
         this.stripe_session_id = stripe_session_id;
         this.status = status;
+        this.user_contact = user_contact;
+        this.user_comment = user_comment;
     }
 
     public Long getId() {
@@ -160,5 +166,21 @@ public class ReservationEntity {
 
     public void setStatus(ReservationStatusEnum status) {
         this.status = status;
+    }
+
+    public String getUser_contact() {
+        return user_contact;
+    }
+
+    public void setUser_contact(String user_contact) {
+        this.user_contact = user_contact;
+    }
+
+    public String getUser_comment() {
+        return user_comment;
+    }
+
+    public void setUser_comment(String user_comment) {
+        this.user_comment = user_comment;
     }
 }

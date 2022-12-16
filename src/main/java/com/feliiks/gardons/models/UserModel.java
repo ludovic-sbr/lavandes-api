@@ -15,7 +15,6 @@ public class UserModel {
     @NotBlank
     private String email;
     private String password;
-    private String tel;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id", nullable = false)
     private RoleModel role;
@@ -32,7 +31,6 @@ public class UserModel {
             String lastname,
             String email,
             String password,
-            String tel,
             RoleModel role,
             String google_id,
             boolean is_user_completed) {
@@ -41,7 +39,6 @@ public class UserModel {
         this.lastname = lastname;
         this.email = email;
         this.password = password;
-        this.tel = tel;
         this.role = role;
         this.google_id = google_id;
         this.is_user_completed = is_user_completed;
@@ -87,13 +84,6 @@ public class UserModel {
         this.password = password;
     }
 
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
 
     public RoleModel getRole() {
         return role;

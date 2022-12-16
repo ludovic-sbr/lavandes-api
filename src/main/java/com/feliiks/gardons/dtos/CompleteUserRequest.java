@@ -6,5 +6,4 @@ import lombok.Data;
 public class CompleteUserRequest {
     String firstname;
     String lastname;
-    String tel;
 }

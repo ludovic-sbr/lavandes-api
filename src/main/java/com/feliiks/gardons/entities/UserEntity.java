@@ -6,7 +6,6 @@ public class UserEntity {
     private String lastname;
     private String email;
     private String password;
-    private String tel;
     private RoleEntity role;
     private String google_id;
     private Boolean is_user_completed;
@@ -19,7 +18,6 @@ public class UserEntity {
             String lastname,
             String email,
             String password,
-            String tel,
             RoleEntity role,
             String google_id,
             boolean is_user_completed) {
@@ -27,7 +25,6 @@ public class UserEntity {
         this.lastname = lastname;
         this.email = email;
         this.password = password;
-        this.tel = tel;
         this.role = role;
         this.google_id = google_id;
         this.is_user_completed = is_user_completed;
@@ -71,14 +68,6 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
     }
 
     public RoleEntity getRole() {

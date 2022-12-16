@@ -83,7 +83,6 @@ public class UserImpl implements UserService {
         newUser.setFirstname(user.getFirstname());
         newUser.setLastname(user.getLastname());
         newUser.setEmail(user.getEmail());
-        newUser.setTel(user.getTel());
         newUser.setPassword(user.getPassword() != null ?
                 this.passwordEncoder.encode(user.getPassword())
                 : null);
@@ -129,10 +128,6 @@ public class UserImpl implements UserService {
             }
 
             existingUser.get().setEmail(user.getEmail());
-        }
-
-        if (user.getTel() != null) {
-            existingUser.get().setTel(user.getTel());
         }
 
         if (user.getRole() != null && user.getRole().getName() != null) {

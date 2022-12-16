@@ -103,7 +103,7 @@ public class UserController {
     @Operation(summary = "Complete current user informations.")
     @PostMapping(path = "/complete", produces = "application/json")
     public ResponseEntity<PostUserResponse> userComplete(@RequestBody CompleteUserRequest completeUserRequest) throws BusinessException {
-        if (completeUserRequest.getFirstname() == null || completeUserRequest.getLastname() == null || completeUserRequest.getTel() == null) {
+        if (completeUserRequest.getFirstname() == null || completeUserRequest.getLastname() == null) {
             throw new BusinessException("Des informations sont manquantes pour compléter l'utilisateur.");
         }
 

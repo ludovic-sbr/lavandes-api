@@ -12,4 +12,6 @@ public class PatchReservationRequest {
     int animal_nbr;
     int vehicle_nbr;
     ReservationStatusEnum status;
+    String user_contact;
+    String user_comment;
 }
