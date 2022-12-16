@@ -62,7 +62,8 @@ public class WebSecurity implements WebMvcConfigurer {
                                 .antMatchers(HttpMethod.POST, "/reservation").authenticated()
                                 .antMatchers(HttpMethod.GET, "/reservation").hasRole(RoleEnum.ADMIN.name())
                                 .antMatchers(HttpMethod.GET, "/reservation/*").authenticated()
-                                .antMatchers(HttpMethod.PATCH, "/reservation/*/status").authenticated()
+                                .antMatchers(HttpMethod.PATCH, "/reservation/*/confirm").authenticated()
+                                .antMatchers(HttpMethod.PATCH, "/reservation/*/complete").authenticated()
                                 .antMatchers(HttpMethod.PATCH, "/reservation/*").hasRole(RoleEnum.ADMIN.name())
                                 .antMatchers(HttpMethod.DELETE, "/reservation/*").hasRole(RoleEnum.ADMIN.name())
                                 // LOCATION

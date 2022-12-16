@@ -72,13 +72,32 @@ public class ReservationController {
         return ResponseEntity.status(200).body(new PatchReservationResponse(reservationToPatch));
     }
 
-    @Operation(summary = "Update the status of a specific reservation.")
-    @PatchMapping(path = "/{sessionId}/status", produces = "application/json")
-    public ResponseEntity<PatchReservationResponse> editReservation(@PathVariable("sessionId") String sessionId, @RequestBody ReservationStatusEnum status) throws BusinessException {
-        Optional<ReservationEntity> currentReservation = reservationService.findBySessionId(sessionId);
+    @Operation(summary = "Confirm a specific reservation.")
+    @PatchMapping(path = "/{id}/confirm", produces = "application/json")
+    public ResponseEntity<PatchReservationResponse> confirmReservation(@PathVariable("id") Long id, @RequestBody ConfirmReservationRequest confirmReservationRequest) throws BusinessException {
+        Optional<ReservationEntity> currentReservation = reservationService.findById(id);
 
         if (currentReservation.isEmpty()) {
-            String errorMessage = String.format("La réservation avec le session ID '%s' n'existe pas.", sessionId);
+            String errorMessage = String.format("La réservation '%s' n'existe pas.", id);
+            throw new BusinessException(errorMessage);
+        }
+
+        ReservationEntity patch = new ReservationEntity();
+        patch.setUser_contact(confirmReservationRequest.getUser_contact());
+        patch.setUser_comment(confirmReservationRequest.getUser_comment());
+
+        ReservationEntity reservationToPatch = reservationService.editReservation(currentReservation.get().getId(), patch);
+
+        return ResponseEntity.status(200).body(new PatchReservationResponse(reservationToPatch));
+    }
+
+    @Operation(summary = "Complete/cancel a specific reservation.")
+    @PatchMapping(path = "/{id}/complete", produces = "application/json")
+    public ResponseEntity<PatchReservationResponse> completeReservation(@PathVariable("id") Long id, @RequestBody ReservationStatusEnum status) throws BusinessException {
+        Optional<ReservationEntity> currentReservation = reservationService.findById(id);
+
+        if (currentReservation.isEmpty()) {
+            String errorMessage = String.format("La réservation '%s' n'existe pas.", id);
             throw new BusinessException(errorMessage);
         }
 
