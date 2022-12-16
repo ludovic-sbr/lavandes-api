@@ -1,6 +1,5 @@
 package com.feliiks.gardons.converters;
 
-import com.feliiks.gardons.dtos.CompleteUserRequest;
 import com.feliiks.gardons.dtos.LoginUserRequest;
 import com.feliiks.gardons.dtos.PatchUserRequest;
 import com.feliiks.gardons.dtos.PostUserRequest;
@@ -34,7 +33,6 @@ public class UserConverter {
             elt.skip(UserEntity::setFirstname);
             elt.skip(UserEntity::setLastname);
             elt.skip(UserEntity::setRole);
-            elt.skip(UserEntity::setIs_user_completed);
         });
 
         return mapper.map(loginUserRequest, UserEntity.class);
@@ -44,23 +42,9 @@ public class UserConverter {
         mapper.typeMap(PostUserRequest.class, UserEntity.class).addMappings(elt -> {
             elt.skip(UserEntity::setId);
             elt.skip(UserEntity::setRole);
-            elt.skip(UserEntity::setIs_user_completed);
         });
 
         return mapper.map(postUserRequest, UserEntity.class);
-    }
-
-    public UserEntity convertToEntity(CompleteUserRequest completeUserRequest) {
-        mapper.typeMap(CompleteUserRequest.class, UserEntity.class).addMappings(elt -> {
-            elt.skip(UserEntity::setId);
-            elt.skip(UserEntity::setEmail);
-            elt.skip(UserEntity::setPassword);
-            elt.skip(UserEntity::setGoogle_id);
-            elt.skip(UserEntity::setRole);
-            elt.skip(UserEntity::setIs_user_completed);
-        });
-
-        return mapper.map(completeUserRequest, UserEntity.class);
     }
 
     public UserEntity convertToEntity(PatchUserRequest patchUserRequest) {

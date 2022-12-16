@@ -91,8 +91,6 @@ public class UserImpl implements UserService {
         Optional<RoleEntity> role = roleService.findById(1L);
         role.ifPresent(newUser::setRole);
 
-        newUser.setIs_user_completed(false);
-
         return userRepository.save(newUser);
     }
 
@@ -141,8 +139,6 @@ public class UserImpl implements UserService {
 
             existingUser.get().setRole(role.get());
         }
-
-        existingUser.get().setIs_user_completed(user.getIs_user_completed());
 
         return userRepository.save(existingUser.get());
     }

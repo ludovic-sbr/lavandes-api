@@ -100,23 +100,6 @@ public class UserController {
         return ResponseEntity.status(201).body(new PostUserResponse(savedUser));
     }
 
-    @Operation(summary = "Complete current user informations.")
-    @PostMapping(path = "/complete", produces = "application/json")
-    public ResponseEntity<PostUserResponse> userComplete(@RequestBody CompleteUserRequest completeUserRequest) throws BusinessException {
-        if (completeUserRequest.getFirstname() == null || completeUserRequest.getLastname() == null) {
-            throw new BusinessException("Des informations sont manquantes pour compléter l'utilisateur.");
-        }
-
-        UserEntity user = userConverter.getLoggedUser();
-        UserEntity patch = userConverter.convertToEntity(completeUserRequest);
-
-        patch.setIs_user_completed(true);
-
-        UserEntity savedUser = userService.editUser(user.getId(), patch);
-
-        return ResponseEntity.status(201).body(new PostUserResponse(savedUser));
-    }
-
     @Operation(summary = "Partial update a specific user.")
     @PatchMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<PatchUserResponse> editUser(@PathVariable("id") Long id, @RequestBody PatchUserRequest patchUserRequest) throws BusinessException {

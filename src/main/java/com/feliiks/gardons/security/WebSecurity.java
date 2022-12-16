@@ -49,7 +49,6 @@ public class WebSecurity implements WebMvcConfigurer {
                                 .antMatchers("/authenticate").permitAll()
                                 // USER
                                 .antMatchers(HttpMethod.POST, "/user").permitAll()
-                                .antMatchers(HttpMethod.POST, "/user/complete").authenticated()
                                 .antMatchers(HttpMethod.GET, "/user/me").authenticated()
                                 .antMatchers(HttpMethod.GET, "/user/reservation").authenticated()
                                 .antMatchers(HttpMethod.GET, "/user").hasRole(RoleEnum.ADMIN.name())

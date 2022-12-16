@@ -19,8 +19,6 @@ public class UserModel {
     @JoinColumn(name = "role_id", nullable = false)
     private RoleModel role;
     private String google_id;
-    @NotBlank
-    private boolean is_user_completed;
 
     public UserModel() {
         super();
@@ -32,8 +30,7 @@ public class UserModel {
             String email,
             String password,
             RoleModel role,
-            String google_id,
-            boolean is_user_completed) {
+            String google_id) {
         super();
         this.firstname = firstname;
         this.lastname = lastname;
@@ -41,7 +38,6 @@ public class UserModel {
         this.password = password;
         this.role = role;
         this.google_id = google_id;
-        this.is_user_completed = is_user_completed;
     }
 
     public Long getId() {
@@ -99,13 +95,5 @@ public class UserModel {
 
     public void setGoogle_id(String google_id) {
         this.google_id = google_id;
-    }
-
-    public boolean isIs_user_completed() {
-        return is_user_completed;
-    }
-
-    public void setIs_user_completed(boolean is_user_completed) {
-        this.is_user_completed = is_user_completed;
     }
 }
