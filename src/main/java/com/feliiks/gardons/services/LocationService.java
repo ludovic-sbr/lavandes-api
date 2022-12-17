@@ -4,12 +4,14 @@ import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public interface LocationService {
     List<LocationEntity> findAll();
+    List<LocationEntity> findAllByPeriod(Date from, Date to);
 
     Optional<LocationEntity> findById(Long id);
 

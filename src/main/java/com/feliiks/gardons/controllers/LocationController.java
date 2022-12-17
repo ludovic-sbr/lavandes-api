@@ -7,9 +7,11 @@ import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.LocationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +33,16 @@ public class LocationController {
     @GetMapping(produces = "application/json")
     public ResponseEntity<GetLocationsResponse> getAllLocations() {
         List<LocationEntity> locations = locationService.findAll();
+
+        return ResponseEntity.status(200).body(new GetLocationsResponse(locations));
+    }
+
+    @Operation(summary = "List all locations by period.")
+    @GetMapping(path = "/period")
+    public ResponseEntity<GetLocationsResponse> getLocationsByPeriod(
+            @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
+            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to) {
+        List<LocationEntity> locations = locationService.findAllByPeriod(from, to);
 
         return ResponseEntity.status(200).body(new GetLocationsResponse(locations));
     }

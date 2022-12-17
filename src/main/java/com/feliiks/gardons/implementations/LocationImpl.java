@@ -9,6 +9,7 @@ import com.stripe.model.Product;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,18 @@ public class LocationImpl implements LocationService {
     @Override
     public List<LocationEntity> findAll() {
         return locationRepository.findAll();
+    }
+
+    @Override
+    public List<LocationEntity> findAllByPeriod(Date from, Date to) {
+        List<LocationEntity> locations = locationRepository.findAll();
+
+        System.out.println(from);
+        System.out.println(to);
+
+        // filtre sur les locations et renvoie des locations disponibles
+
+         return locations;
     }
 
     @Override
