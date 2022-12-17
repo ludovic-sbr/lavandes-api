@@ -39,10 +39,10 @@ public class UserController {
 
     @Operation(summary = "Get the current user.")
     @GetMapping(path = "/me", produces = "application/json")
-    public ResponseEntity<GetUserResponse> getMyself() {
+    public ResponseEntity<UserResponse> getMyself() {
         UserEntity user = userConverter.getLoggedUser();
 
-        return ResponseEntity.status(200).body(new GetUserResponse(user));
+        return ResponseEntity.status(200).body(new UserResponse(user));
     }
 
     @Operation(summary = "List all reservations of current user.")
@@ -62,7 +62,7 @@ public class UserController {
 
     @Operation(summary = "Get user by id.")
     @GetMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<GetUserResponse> getUserById(@PathVariable("id") Long id) throws BusinessException {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable("id") Long id) throws BusinessException {
         Optional<UserEntity> user = userService.findById(id);
 
         if (user.isEmpty()) {
@@ -70,7 +70,7 @@ public class UserController {
             throw new BusinessException(errorMessage);
         }
 
-        return ResponseEntity.status(200).body(new GetUserResponse(user.get()));
+        return ResponseEntity.status(200).body(new UserResponse(user.get()));
     }
 
     @Operation(summary = "List all reservations of specific user.")
@@ -88,41 +88,41 @@ public class UserController {
 
     @Operation(summary = "Create a new user.")
     @PostMapping(produces = "application/json")
-    public ResponseEntity<PostUserResponse> saveNewUser(@RequestBody PostUserRequest postUserRequest) throws BusinessException {
-        UserEntity user = userConverter.convertToEntity(postUserRequest);
+    public ResponseEntity<UserResponse> saveNewUser(@RequestBody UserRequest userRequest) throws BusinessException {
+        UserEntity user = userConverter.convertToEntity(userRequest);
 
-        if (postUserRequest.getPassword() != null && !Objects.equals(postUserRequest.getPassword(), postUserRequest.getRepeat_password())) {
+        if (userRequest.getPassword() != null && !Objects.equals(userRequest.getPassword(), userRequest.getRepeat_password())) {
             throw new BusinessException("Les mots de passe ne correspondent pas.");
         }
 
         UserEntity savedUser = userService.register(user);
 
-        return ResponseEntity.status(201).body(new PostUserResponse(savedUser));
+        return ResponseEntity.status(201).body(new UserResponse(savedUser));
     }
 
     @Operation(summary = "Partial update a specific user.")
     @PatchMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<PatchUserResponse> editUser(@PathVariable("id") Long id, @RequestBody PatchUserRequest patchUserRequest) throws BusinessException {
-        UserEntity user = userConverter.convertToEntity(patchUserRequest);
+    public ResponseEntity<UserResponse> editUser(@PathVariable("id") Long id, @RequestBody UserRequest userRequest) throws BusinessException {
+        UserEntity user = userConverter.convertToEntity(userRequest);
         UserEntity userToPatch = userService.editUser(id, user);
 
-        return ResponseEntity.status(200).body(new PatchUserResponse(userToPatch));
+        return ResponseEntity.status(200).body(new UserResponse(userToPatch));
     }
 
     @Operation(summary = "Partial update the current user.")
     @PatchMapping(path = "/me", produces = "application/json")
-    public ResponseEntity<PatchUserResponse> editMyself(@RequestBody PatchUserRequest patchUserRequest) throws BusinessException {
+    public ResponseEntity<UserResponse> editMyself(@RequestBody UserRequest userRequest) throws BusinessException {
         UserEntity user = userConverter.getLoggedUser();
-        UserEntity patch = userConverter.convertToEntity(patchUserRequest);
+        UserEntity patch = userConverter.convertToEntity(userRequest);
 
         UserEntity patchedUser = userService.editUser(user.getId(), patch);
 
-        return ResponseEntity.status(200).body(new PatchUserResponse(patchedUser));
+        return ResponseEntity.status(200).body(new UserResponse(patchedUser));
     }
 
     @Operation(summary = "Delete a specific user.")
     @DeleteMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<DeleteUserResponse> deleteUser(@PathVariable("id") Long id) throws BusinessException {
+    public ResponseEntity<UserResponse> deleteUser(@PathVariable("id") Long id) throws BusinessException {
         Optional<UserEntity> user = userService.deleteById(id);
 
         if (user.isEmpty()) {
@@ -130,6 +130,6 @@ public class UserController {
             throw new BusinessException(errorMessage);
         }
 
-        return ResponseEntity.status(200).body(new DeleteUserResponse(user.get()));
+        return ResponseEntity.status(200).body(new UserResponse(user.get()));
     }
 }

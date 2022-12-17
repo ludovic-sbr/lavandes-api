@@ -3,7 +3,7 @@ package com.feliiks.gardons.dtos;
 import lombok.Data;
 
 @Data
-public class PostLocationRequest {
+public class LocationRequest {
     String name;
     String stripeProductId;
     String description;

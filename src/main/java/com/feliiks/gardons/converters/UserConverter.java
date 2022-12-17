@@ -1,8 +1,7 @@
 package com.feliiks.gardons.converters;
 
-import com.feliiks.gardons.dtos.LoginUserRequest;
-import com.feliiks.gardons.dtos.PatchUserRequest;
-import com.feliiks.gardons.dtos.PostUserRequest;
+import com.feliiks.gardons.dtos.LoginRequest;
+import com.feliiks.gardons.dtos.UserRequest;
 import com.feliiks.gardons.entities.RoleEntity;
 import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.models.UserModel;
@@ -27,35 +26,23 @@ public class UserConverter {
         return (UserEntity) authentication.getPrincipal();
     }
 
-    public UserEntity convertToEntity(LoginUserRequest loginUserRequest) {
-        mapper.typeMap(LoginUserRequest.class, UserEntity.class).addMappings(elt -> {
+    public UserEntity convertToEntity(LoginRequest loginRequest) {
+        mapper.typeMap(LoginRequest.class, UserEntity.class).addMappings(elt -> {
             elt.skip(UserEntity::setId);
             elt.skip(UserEntity::setFirstname);
             elt.skip(UserEntity::setLastname);
             elt.skip(UserEntity::setRole);
         });
 
-        return mapper.map(loginUserRequest, UserEntity.class);
+        return mapper.map(loginRequest, UserEntity.class);
     }
 
-    public UserEntity convertToEntity(PostUserRequest postUserRequest) {
-        mapper.typeMap(PostUserRequest.class, UserEntity.class).addMappings(elt -> {
-            elt.skip(UserEntity::setId);
-            elt.skip(UserEntity::setRole);
-        });
+    public UserEntity convertToEntity(UserRequest userRequest) {
+        mapper.typeMap(UserRequest.class, UserEntity.class).addMappings(elt -> elt.skip(UserEntity::setId));
 
-        return mapper.map(postUserRequest, UserEntity.class);
-    }
+        UserEntity userEntity = mapper.map(userRequest, UserEntity.class);
 
-    public UserEntity convertToEntity(PatchUserRequest patchUserRequest) {
-        mapper.typeMap(PatchUserRequest.class, UserEntity.class).addMappings(elt -> {
-            elt.skip(UserEntity::setId);
-            elt.skip(UserEntity::setGoogle_id);
-        });
-
-        UserEntity userEntity = mapper.map(patchUserRequest, UserEntity.class);
-
-        userEntity.setRole(new RoleEntity(patchUserRequest.getRoleName()));
+        userEntity.setRole(new RoleEntity(userRequest.getRoleName()));
 
         return userEntity;
     }

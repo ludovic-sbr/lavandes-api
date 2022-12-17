@@ -2,10 +2,10 @@ package com.feliiks.gardons.dtos;
 
 import com.feliiks.gardons.entities.LocationEntity;
 
-public class PostLocationResponse {
+public class LocationResponse {
     private LocationEntity location;
 
-    public PostLocationResponse(LocationEntity location) {
+    public LocationResponse(LocationEntity location) {
         this.location = location;
     }
 

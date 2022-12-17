@@ -1,7 +1,6 @@
 package com.feliiks.gardons.converters;
 
-import com.feliiks.gardons.dtos.PatchLocationRequest;
-import com.feliiks.gardons.dtos.PostLocationRequest;
+import com.feliiks.gardons.dtos.LocationRequest;
 import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.models.LocationModel;
 import org.modelmapper.ModelMapper;
@@ -14,22 +13,10 @@ public class LocationConverter {
     @Autowired
     private ModelMapper mapper;
 
-    public LocationEntity convertToEntity(PostLocationRequest postLocationRequest) {
-        mapper.typeMap(PostLocationRequest.class, LocationEntity.class).addMappings(elt -> {
-            elt.skip(LocationEntity::setId);
-            elt.skip(LocationEntity::setAvailable);
-        });
+    public LocationEntity convertToEntity(LocationRequest locationRequest) {
+        mapper.typeMap(LocationRequest.class, LocationEntity.class).addMappings(elt -> elt.skip(LocationEntity::setId));
 
-        return mapper.map(postLocationRequest, LocationEntity.class);
-    }
-
-    public LocationEntity convertToEntity(PatchLocationRequest patchLocationRequest) {
-        mapper.typeMap(PatchLocationRequest.class, LocationEntity.class).addMappings(elt -> {
-            elt.skip(LocationEntity::setId);
-            elt.skip(LocationEntity::setSlot_number);
-        });
-
-        return mapper.map(patchLocationRequest, LocationEntity.class);
+        return mapper.map(locationRequest, LocationEntity.class);
     }
 
     public LocationEntity convertToEntity(LocationModel location) {

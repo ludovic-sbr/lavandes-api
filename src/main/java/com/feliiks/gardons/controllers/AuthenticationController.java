@@ -1,8 +1,8 @@
 package com.feliiks.gardons.controllers;
 
 import com.feliiks.gardons.converters.UserConverter;
-import com.feliiks.gardons.dtos.LoginUserRequest;
-import com.feliiks.gardons.dtos.LoginUserResponse;
+import com.feliiks.gardons.dtos.LoginRequest;
+import com.feliiks.gardons.dtos.LoginResponse;
 import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.exceptions.AuthenticationException;
 import com.feliiks.gardons.models.TokenModel;
@@ -32,11 +32,11 @@ public class AuthenticationController {
 
     @Operation(summary = "Authenticate a user.")
     @PostMapping(produces = "application/json")
-    public ResponseEntity<LoginUserResponse> authenticateUser(@RequestBody LoginUserRequest loginUserRequest) throws AuthenticationException {
-        UserEntity user = userConverter.convertToEntity(loginUserRequest);
+    public ResponseEntity<LoginResponse> authenticateUser(@RequestBody LoginRequest loginRequest) throws AuthenticationException {
+        UserEntity user = userConverter.convertToEntity(loginRequest);
 
         TokenModel token = authenticationService.authenticate(user);
 
-        return ResponseEntity.status(200).body(new LoginUserResponse(token.getValue()));
+        return ResponseEntity.status(200).body(new LoginResponse(token.getValue()));
     }
 }

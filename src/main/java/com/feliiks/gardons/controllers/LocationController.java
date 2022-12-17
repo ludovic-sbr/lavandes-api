@@ -37,7 +37,7 @@ public class LocationController {
 
     @Operation(summary = "Get a specific location.")
     @GetMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<GetLocationResponse> getLocationById(@PathVariable("id") Long id) throws BusinessException {
+    public ResponseEntity<LocationResponse> getLocationById(@PathVariable("id") Long id) throws BusinessException {
         Optional<LocationEntity> location = locationService.findById(id);
 
         if (location.isEmpty()) {
@@ -45,30 +45,30 @@ public class LocationController {
             throw new BusinessException(errorMessage);
         }
 
-        return ResponseEntity.status(200).body(new GetLocationResponse(location.get()));
+        return ResponseEntity.status(200).body(new LocationResponse(location.get()));
     }
 
     @Operation(summary = "Create a new location.")
     @PostMapping(produces = "application/json")
-    public ResponseEntity<PostLocationResponse> saveNewLocation(@RequestBody PostLocationRequest postLocationRequest) throws BusinessException {
-        LocationEntity location = locationConverter.convertToEntity(postLocationRequest);
+    public ResponseEntity<LocationResponse> saveNewLocation(@RequestBody LocationRequest locationRequest) throws BusinessException {
+        LocationEntity location = locationConverter.convertToEntity(locationRequest);
         LocationEntity savedLocation = locationService.create(location);
 
-        return ResponseEntity.status(201).body(new PostLocationResponse(savedLocation));
+        return ResponseEntity.status(201).body(new LocationResponse(savedLocation));
     }
 
     @Operation(summary = "Partial update a specific location.")
     @PatchMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<PatchLocationResponse> editLocation(@PathVariable("id") Long id, @RequestBody PatchLocationRequest patchLocationRequest) throws BusinessException {
-        LocationEntity location = locationConverter.convertToEntity(patchLocationRequest);
+    public ResponseEntity<LocationResponse> editLocation(@PathVariable("id") Long id, @RequestBody LocationRequest locationRequest) throws BusinessException {
+        LocationEntity location = locationConverter.convertToEntity(locationRequest);
         LocationEntity patchedLocation = locationService.editLocation(id, location);
 
-        return ResponseEntity.status(200).body(new PatchLocationResponse(patchedLocation));
+        return ResponseEntity.status(200).body(new LocationResponse(patchedLocation));
     }
 
     @Operation(summary = "Delete a specific location.")
     @DeleteMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<DeleteLocationResponse> deleteLocation(@PathVariable("id") Long id) throws BusinessException {
+    public ResponseEntity<LocationResponse> deleteLocation(@PathVariable("id") Long id) throws BusinessException {
         Optional<LocationEntity> location = locationService.deleteById(id);
 
         if (location.isEmpty()) {
@@ -76,6 +76,6 @@ public class LocationController {
             throw new BusinessException(errorMessage);
         }
 
-        return ResponseEntity.status(200).body(new DeleteLocationResponse(location.get()));
+        return ResponseEntity.status(200).body(new LocationResponse(location.get()));
     }
 }

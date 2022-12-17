@@ -2,10 +2,10 @@ package com.feliiks.gardons.dtos;
 
 import com.feliiks.gardons.entities.UserEntity;
 
-public class PatchUserResponse {
+public class UserResponse {
     private UserEntity user;
 
-    public PatchUserResponse(UserEntity user) {
+    public UserResponse(UserEntity user) {
         this.user = user;
     }
 

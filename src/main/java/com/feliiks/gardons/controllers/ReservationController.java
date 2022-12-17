@@ -43,7 +43,7 @@ public class ReservationController {
 
     @Operation(summary = "Get a specific reservation.")
     @GetMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<GetReservationResponse> getReservationById(@PathVariable("id") Long id) throws BusinessException {
+    public ResponseEntity<ReservationResponse> getReservationById(@PathVariable("id") Long id) throws BusinessException {
         Optional<ReservationEntity> reservation = reservationService.findById(id);
 
         if (reservation.isEmpty()) {
@@ -51,30 +51,30 @@ public class ReservationController {
             throw new BusinessException(errorMessage);
         }
 
-        return ResponseEntity.status(200).body(new GetReservationResponse(reservation.get()));
+        return ResponseEntity.status(200).body(new ReservationResponse(reservation.get()));
     }
 
     @Operation(summary = "Create a new reservation.")
     @PostMapping(produces = "application/json")
-    public ResponseEntity<PostReservationResponse> saveNewReservation(@RequestBody PostReservationRequest postReservationRequest) throws BusinessException {
-        ReservationEntity reservation = reservationConverter.convertToEntity(postReservationRequest);
+    public ResponseEntity<ReservationResponse> saveNewReservation(@RequestBody ReservationRequest reservationRequest) throws BusinessException {
+        ReservationEntity reservation = reservationConverter.convertToEntity(reservationRequest);
         ReservationEntity reservationToSave = reservationService.create(reservation);
 
-        return ResponseEntity.status(201).body(new PostReservationResponse(reservationToSave));
+        return ResponseEntity.status(201).body(new ReservationResponse(reservationToSave));
     }
 
     @Operation(summary = "Partial update a specific reservation.")
     @PatchMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<PatchReservationResponse> editReservation(@PathVariable("id") Long id, @RequestBody PatchReservationRequest patchReservationRequest) throws BusinessException {
-        ReservationEntity reservation = reservationConverter.convertToEntity(patchReservationRequest);
+    public ResponseEntity<ReservationResponse> editReservation(@PathVariable("id") Long id, @RequestBody ReservationRequest reservationRequest) throws BusinessException {
+        ReservationEntity reservation = reservationConverter.convertToEntity(reservationRequest);
         ReservationEntity reservationToPatch = reservationService.editReservation(id, reservation);
 
-        return ResponseEntity.status(200).body(new PatchReservationResponse(reservationToPatch));
+        return ResponseEntity.status(200).body(new ReservationResponse(reservationToPatch));
     }
 
     @Operation(summary = "Confirm a specific reservation.")
     @PatchMapping(path = "/{id}/confirm", produces = "application/json")
-    public ResponseEntity<PatchReservationResponse> confirmReservation(@PathVariable("id") Long id, @RequestBody ConfirmReservationRequest confirmReservationRequest) throws BusinessException {
+    public ResponseEntity<ReservationResponse> confirmReservation(@PathVariable("id") Long id, @RequestBody ConfirmReservationRequest confirmReservationRequest) throws BusinessException {
         Optional<ReservationEntity> currentReservation = reservationService.findById(id);
 
         if (currentReservation.isEmpty()) {
@@ -88,12 +88,12 @@ public class ReservationController {
 
         ReservationEntity reservationToPatch = reservationService.editReservation(currentReservation.get().getId(), patch);
 
-        return ResponseEntity.status(200).body(new PatchReservationResponse(reservationToPatch));
+        return ResponseEntity.status(200).body(new ReservationResponse(reservationToPatch));
     }
 
     @Operation(summary = "Complete/cancel a specific reservation.")
     @PatchMapping(path = "/{id}/complete", produces = "application/json")
-    public ResponseEntity<PatchReservationResponse> completeReservation(@PathVariable("id") Long id, @RequestBody ReservationStatusEnum status) throws BusinessException {
+    public ResponseEntity<ReservationResponse> completeReservation(@PathVariable("id") Long id, @RequestBody ReservationStatusEnum status) throws BusinessException {
         Optional<ReservationEntity> currentReservation = reservationService.findById(id);
 
         if (currentReservation.isEmpty()) {
@@ -106,12 +106,12 @@ public class ReservationController {
 
         ReservationEntity reservationToPatch = reservationService.editReservation(currentReservation.get().getId(), patch);
 
-        return ResponseEntity.status(200).body(new PatchReservationResponse(reservationToPatch));
+        return ResponseEntity.status(200).body(new ReservationResponse(reservationToPatch));
     }
 
     @Operation(summary = "Delete a specific reservation.")
     @DeleteMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<DeleteReservationResponse> deleteReservation(@PathVariable("id") Long id) throws BusinessException {
+    public ResponseEntity<ReservationResponse> deleteReservation(@PathVariable("id") Long id) throws BusinessException {
         Optional<ReservationEntity> reservation = reservationService.deleteById(id);
 
         if (reservation.isEmpty()) {
@@ -119,6 +119,6 @@ public class ReservationController {
             throw new BusinessException(errorMessage);
         }
 
-        return ResponseEntity.status(200).body(new DeleteReservationResponse(reservation.get()));
+        return ResponseEntity.status(200).body(new ReservationResponse(reservation.get()));
     }
 }

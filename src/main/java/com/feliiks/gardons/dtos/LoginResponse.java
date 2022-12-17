@@ -1,9 +1,9 @@
 package com.feliiks.gardons.dtos;
 
-public class LoginUserResponse {
+public class LoginResponse {
     private String token;
 
-    public LoginUserResponse(String token) {
+    public LoginResponse(String token) {
         this.token = token;
     }
 

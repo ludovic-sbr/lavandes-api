@@ -2,10 +2,10 @@ package com.feliiks.gardons.dtos;
 
 import com.feliiks.gardons.entities.ReservationEntity;
 
-public class PatchReservationResponse {
+public class ReservationResponse {
     private ReservationEntity reservation;
 
-    public PatchReservationResponse(ReservationEntity reservation) {
+    public ReservationResponse(ReservationEntity reservation) {
         this.reservation = reservation;
     }
 
