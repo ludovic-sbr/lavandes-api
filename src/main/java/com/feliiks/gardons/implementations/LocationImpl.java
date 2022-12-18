@@ -1,8 +1,11 @@
 package com.feliiks.gardons.implementations;
 
 import com.feliiks.gardons.entities.LocationEntity;
+import com.feliiks.gardons.entities.ReservationEntity;
+import com.feliiks.gardons.entities.ReservationStatusEnum;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.LocationRepository;
+import com.feliiks.gardons.repositories.ReservationRepository;
 import com.feliiks.gardons.services.LocationService;
 import com.feliiks.gardons.services.StripeService;
 import com.stripe.model.Product;
@@ -11,18 +14,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class LocationImpl implements LocationService {
     public final LocationRepository locationRepository;
     public final StripeService stripeService;
+    public final ReservationRepository reservationRepository;
 
     public LocationImpl(
             LocationRepository locationRepository,
-            StripeService stripeService) {
+            StripeService stripeService,
+            ReservationRepository reservationRepository) {
         this.locationRepository = locationRepository;
         this.stripeService = stripeService;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -34,12 +41,19 @@ public class LocationImpl implements LocationService {
     public List<LocationEntity> findAllByPeriod(Date from, Date to) {
         List<LocationEntity> locations = locationRepository.findAll();
 
-        System.out.println(from);
-        System.out.println(to);
+        List<ReservationEntity> reservations = reservationRepository.findAll();
 
-        // filtre sur les locations et renvoie des locations disponibles
+        List<ReservationEntity> completeReservations =
+                reservations
+                        .stream()
+                        .filter(elt -> Objects.equals(elt.getStatus(), ReservationStatusEnum.COMPLETE))
+                        .toList();
 
-         return locations;
+        List<LocationEntity> unavailableLocations = completeReservations
+                .stream()
+                .filter(elt -> elt.getFrom().compareTo(to) < 0 && elt.getTo().compareTo(from) > 0).map(ReservationEntity::getLocation).toList();
+
+         return locations.stream().filter(elt -> !unavailableLocations.contains(elt)).toList();
     }
 
     @Override
