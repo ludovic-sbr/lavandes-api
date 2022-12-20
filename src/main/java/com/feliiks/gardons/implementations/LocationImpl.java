@@ -53,7 +53,7 @@ public class LocationImpl implements LocationService {
                 .stream()
                 .filter(elt -> elt.getFrom().compareTo(to) < 0 && elt.getTo().compareTo(from) > 0).map(ReservationEntity::getLocation).toList();
 
-         return locations.stream().filter(elt -> !unavailableLocations.contains(elt)).toList();
+         return locations.stream().filter(elt -> unavailableLocations.stream().noneMatch(loc -> Objects.equals(elt.getId(), loc.getId()))).toList();
     }
 
     @Override
