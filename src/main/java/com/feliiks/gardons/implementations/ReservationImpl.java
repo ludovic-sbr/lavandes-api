@@ -1,6 +1,5 @@
 package com.feliiks.gardons.implementations;
 
-import com.feliiks.gardons.dtos.CheckoutSessionRequest;
 import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.entities.ReservationEntity;
 import com.feliiks.gardons.entities.ReservationStatusEnum;
@@ -11,7 +10,6 @@ import com.feliiks.gardons.services.LocationService;
 import com.feliiks.gardons.services.ReservationService;
 import com.feliiks.gardons.services.StripeService;
 import com.feliiks.gardons.services.UserService;
-import com.stripe.model.checkout.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -115,15 +113,6 @@ public class ReservationImpl implements ReservationService {
             throw new BusinessException(errorMessage);
         }
 
-        // Création de la checkout session stripe
-        CheckoutSessionRequest checkoutSessionRequest = new CheckoutSessionRequest();
-        checkoutSessionRequest.setProductId(location.get().getStripeProductId());
-        checkoutSessionRequest.setUserId(user.get().getId());
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        checkoutSessionRequest.setQuantity((long) nightNumber);
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        Session stripeSession = stripeService.createCheckoutSession(checkoutSessionRequest);
-
         // Création de la réservation
         ReservationEntity newReservation = new ReservationEntity();
         newReservation.setUser(user.get());
@@ -137,7 +126,6 @@ public class ReservationImpl implements ReservationService {
         newReservation.setTo(reservation.getTo());
         newReservation.setNight_number(nightNumber);
         newReservation.setTotal_price(this.totalPrice(location.get().getPrice_per_night(), nightNumber));
-        newReservation.setStripe_session_id(stripeSession.getId());
         newReservation.setStatus(ReservationStatusEnum.OPEN);
         newReservation.setUser_contact(null);
         newReservation.setUser_comment(null);
@@ -212,6 +200,10 @@ public class ReservationImpl implements ReservationService {
 
         if (reservation.getVehicle_nbr() != 0) {
             existingReservation.get().setVehicle_nbr(reservation.getVehicle_nbr());
+        }
+
+        if (reservation.getStripe_session_id() != null) {
+            existingReservation.get().setStripe_session_id((reservation.getStripe_session_id()));
         }
 
         if (reservation.getStatus() != null) {
