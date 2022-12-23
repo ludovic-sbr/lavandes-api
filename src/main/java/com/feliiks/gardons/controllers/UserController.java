@@ -109,17 +109,6 @@ public class UserController {
         return ResponseEntity.status(200).body(new UserResponse(userToPatch));
     }
 
-    @Operation(summary = "Partial update the current user.")
-    @PatchMapping(path = "/me", produces = "application/json")
-    public ResponseEntity<UserResponse> editMyself(@RequestBody UserRequest userRequest) throws BusinessException {
-        UserEntity user = userConverter.getLoggedUser();
-        UserEntity patch = userConverter.convertToEntity(userRequest);
-
-        UserEntity patchedUser = userService.editUser(user.getId(), patch);
-
-        return ResponseEntity.status(200).body(new UserResponse(patchedUser));
-    }
-
     @Operation(summary = "Delete a specific user.")
     @DeleteMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<UserResponse> deleteUser(@PathVariable("id") Long id) throws BusinessException {
