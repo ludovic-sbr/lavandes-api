@@ -24,5 +24,5 @@ public interface UserService {
 
     UserEntity editUser(Long id, UserEntity user) throws BusinessException;
 
-    Optional<UserEntity> deleteById(Long id);
+    Optional<UserEntity> deleteById(Long id) throws BusinessException;
 }

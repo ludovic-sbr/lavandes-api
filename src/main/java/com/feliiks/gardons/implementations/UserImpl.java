@@ -4,10 +4,10 @@ import com.feliiks.gardons.entities.ReservationEntity;
 import com.feliiks.gardons.entities.RoleEntity;
 import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
+import com.feliiks.gardons.repositories.ReservationRepository;
 import com.feliiks.gardons.repositories.UserRepository;
 import com.feliiks.gardons.services.RoleService;
 import com.feliiks.gardons.services.UserService;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,14 +21,18 @@ public class UserImpl implements UserService {
     public final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final ReservationRepository reservationRepository;
+
     String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
     public UserImpl(
             UserRepository userRepository,
-            RoleService roleService) {
+            RoleService roleService,
+            ReservationRepository reservationRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.roleService = roleService;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -144,16 +148,14 @@ public class UserImpl implements UserService {
     }
 
     @Override
-    public Optional<UserEntity> deleteById(Long id) {
-        try {
-            Optional<UserEntity> user = userRepository.findById(id);
+    public Optional<UserEntity> deleteById(Long id) throws BusinessException {
+        Optional<UserEntity> user = userRepository.findById(id);
+        List<ReservationEntity> userReservations = findUserReservations(user.get().getId());
 
-            userRepository.deleteById(id);
+        userRepository.deleteById(id);
+        userReservations.forEach(elt -> reservationRepository.deleteById(elt.getId()));
 
-            return user;
-        } catch (EmptyResultDataAccessException err) {
-            return Optional.empty();
-        }
+        return user;
     }
 
     public static boolean patternMatches(String string, String regexPattern) {
