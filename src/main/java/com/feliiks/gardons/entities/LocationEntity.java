@@ -3,6 +3,7 @@ package com.feliiks.gardons.entities;
 public class LocationEntity {
     private Long id;
     private String name;
+    private FileEntity image;
     private String stripeProductId;
     private String description;
     private Boolean parking;
@@ -23,8 +24,27 @@ public class LocationEntity {
     public LocationEntity() {
     }
 
-    public LocationEntity(String name, String stripeProductId, String description, boolean parking, boolean kitchen, boolean wifi, boolean sanitary, boolean heater, boolean air_conditioner, boolean terrace, boolean barbecue, int surface, int max_persons, int price_per_night, int bedrooms, boolean available, int slot_number) {
+    public LocationEntity(
+            String name,
+            FileEntity image,
+            String stripeProductId,
+            String description,
+            boolean parking,
+            boolean kitchen,
+            boolean wifi,
+            boolean sanitary,
+            boolean heater,
+            boolean air_conditioner,
+            boolean terrace,
+            boolean barbecue,
+            int surface,
+            int max_persons,
+            int price_per_night,
+            int bedrooms,
+            boolean available,
+            int slot_number) {
         this.name = name;
+        this.image = image;
         this.stripeProductId = stripeProductId;
         this.description = description;
         this.parking = parking;
@@ -57,6 +77,14 @@ public class LocationEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public FileEntity getImage() {
+        return image;
+    }
+
+    public void setImage(FileEntity image) {
+        this.image = image;
     }
 
     public String getStripeProductId() {
