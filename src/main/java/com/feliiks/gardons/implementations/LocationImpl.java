@@ -76,6 +76,10 @@ public class LocationImpl implements LocationService {
             throw new BusinessException(errorMessage);
         }
 
+        if (location.getImage() == null) {
+            throw new BusinessException("Vous devez fournir une image pour la location.");
+        }
+
         LocationEntity newLocation = new LocationEntity();
 
         Optional<Product> product = stripeService.findProductById(location.getStripeProductId());
@@ -88,6 +92,7 @@ public class LocationImpl implements LocationService {
         newLocation.setStripeProductId(location.getStripeProductId());
 
         newLocation.setName(location.getName());
+        newLocation.setImage(location.getImage());
         newLocation.setDescription(location.getDescription());
         newLocation.setParking(location.getParking());
         newLocation.setKitchen(location.getKitchen());

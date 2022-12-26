@@ -2,14 +2,18 @@ package com.feliiks.gardons.controllers;
 
 import com.feliiks.gardons.converters.LocationConverter;
 import com.feliiks.gardons.dtos.*;
+import com.feliiks.gardons.entities.FileEntity;
 import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
+import com.feliiks.gardons.services.FileService;
 import com.feliiks.gardons.services.LocationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -20,12 +24,15 @@ import java.util.Optional;
 @RequestMapping("/location")
 public class LocationController {
     public final LocationService locationService;
+    public final FileService fileService;
     private final LocationConverter locationConverter;
 
     public LocationController(
             LocationService locationService,
+            FileService fileService,
             LocationConverter locationConverter) {
         this.locationService = locationService;
+        this.fileService = fileService;
         this.locationConverter = locationConverter;
     }
 
@@ -61,9 +68,14 @@ public class LocationController {
     }
 
     @Operation(summary = "Create a new location.")
-    @PostMapping(produces = "application/json")
-    public ResponseEntity<LocationResponse> saveNewLocation(@RequestBody LocationRequest locationRequest) throws BusinessException {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LocationResponse> saveNewLocation(LocationRequest locationRequest, @RequestPart("image") final MultipartFile image) throws BusinessException {
         LocationEntity location = locationConverter.convertToEntity(locationRequest);
+
+        FileEntity file = fileService.saveFile(image);
+
+        location.setImage(file);
+
         LocationEntity savedLocation = locationService.create(location);
 
         return ResponseEntity.status(201).body(new LocationResponse(savedLocation));

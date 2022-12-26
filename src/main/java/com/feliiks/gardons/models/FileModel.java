@@ -9,18 +9,25 @@ public class FileModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String type;
-    @Lob
-    private byte[] data;
+    private String path;
+    private String publicUrl;
 
     public FileModel() {
         super();
     }
 
-    public FileModel(String name, String type, byte[] data) {
+    public FileModel(String name, String path, String publicUrl) {
         this.name = name;
-        this.type = type;
-        this.data = data;
+        this.path = path;
+        this.publicUrl = publicUrl;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -31,19 +38,19 @@ public class FileModel {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public String getPath() {
+        return path;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public byte[] getData() {
-        return data;
+    public String getPublicUrl() {
+        return publicUrl;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setPublicUrl(String publicUrl) {
+        this.publicUrl = publicUrl;
     }
 }
