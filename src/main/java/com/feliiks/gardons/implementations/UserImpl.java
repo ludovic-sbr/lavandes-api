@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -116,7 +117,7 @@ public class UserImpl implements UserService {
             existingUser.get().setLastname(user.getLastname());
         }
 
-        if (user.getEmail() != null) {
+        if (user.getEmail() != null && !Objects.equals(user.getEmail(), existingUser.get().getEmail())) {
             Optional<UserEntity> userExists = findByEmail(user.getEmail());
 
             if (!patternMatches(user.getEmail(), emailRegex)) {
@@ -130,6 +131,10 @@ public class UserImpl implements UserService {
             }
 
             existingUser.get().setEmail(user.getEmail());
+        }
+
+        if (user.getPassword() != null) {
+            existingUser.get().setPassword(this.passwordEncoder.encode(user.getPassword()));
         }
 
         if (user.getRole() != null && user.getRole().getName() != null) {

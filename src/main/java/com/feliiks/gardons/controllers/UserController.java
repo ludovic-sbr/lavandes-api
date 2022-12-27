@@ -52,11 +52,6 @@ public class UserController {
 
         List<ReservationEntity> userReservations = userService.findUserReservations(user.getId());
 
-        if (userReservations.isEmpty()) {
-            String errorMessage = String.format("L'utilisateur '%s' n'a aucune réservation.", user.getId());
-            throw new BusinessException(errorMessage);
-        }
-
         return ResponseEntity.status(200).body(new GetReservationsResponse(userReservations));
     }
 
@@ -104,6 +99,11 @@ public class UserController {
     @PatchMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<UserResponse> editUser(@PathVariable("id") Long id, @RequestBody UserRequest userRequest) throws BusinessException {
         UserEntity user = userConverter.convertToEntity(userRequest);
+
+        if (userRequest.getPassword() != null && !Objects.equals(userRequest.getPassword(), userRequest.getRepeat_password())) {
+            throw new BusinessException("Les mots de passe ne correspondent pas.");
+        }
+
         UserEntity userToPatch = userService.editUser(id, user);
 
         return ResponseEntity.status(200).body(new UserResponse(userToPatch));

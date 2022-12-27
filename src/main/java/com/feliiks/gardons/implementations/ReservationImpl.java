@@ -117,7 +117,7 @@ public class ReservationImpl implements ReservationService {
         ReservationEntity newReservation = new ReservationEntity();
         newReservation.setUser(user.get());
         newReservation.setLocation(location.get());
-        newReservation.setReservation_key(StringUtils.substring("RES" + sr.nextLong(), 0, 12));
+        newReservation.setReservation_key(StringUtils.substring(String.valueOf(sr.nextLong()), 0, 12));
         newReservation.setAdult_nbr(reservation.getAdult_nbr());
         newReservation.setChild_nbr(reservation.getChild_nbr());
         newReservation.setAnimal_nbr(reservation.getAnimal_nbr());
