@@ -108,7 +108,7 @@ public class ReservationImpl implements ReservationService {
                         .filter(elt -> elt.getFrom().compareTo(reservation.getTo()) < 0 && elt.getTo().compareTo(reservation.getFrom()) > 0)
                         .count();
 
-        if (conflictualReservations > 0) {
+        if (conflictualReservations >= location.get().getSlot_remaining()) {
             String errorMessage = "La location sélectionnée n'est pas disponible sur la période choisie.";
             throw new BusinessException(errorMessage);
         }

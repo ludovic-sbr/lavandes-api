@@ -27,7 +27,7 @@ public class LocationModel {
     private int price_per_night;
     private int bedrooms;
     private boolean available;
-    private int slot_number;
+    private int slot_remaining;
 
     public LocationModel() {
         super();
@@ -51,7 +51,7 @@ public class LocationModel {
             int price_per_night,
             int bedrooms,
             boolean available,
-            int slot_number) {
+            int slot_remaining) {
         this.name = name;
         this.image = image;
         this.stripeProductId = stripeProductId;
@@ -69,7 +69,7 @@ public class LocationModel {
         this.price_per_night = price_per_night;
         this.bedrooms = bedrooms;
         this.available = available;
-        this.slot_number = slot_number;
+        this.slot_remaining = slot_remaining;
     }
 
     public Long getId() {
@@ -216,11 +216,11 @@ public class LocationModel {
         this.available = available;
     }
 
-    public int getSlot_number() {
-        return slot_number;
+    public int getSlot_remaining() {
+        return slot_remaining;
     }
 
-    public void setSlot_number(int slot_number) {
-        this.slot_number = slot_number;
+    public void setSlot_remaining(int slot_remaining) {
+        this.slot_remaining = slot_remaining;
     }
 }

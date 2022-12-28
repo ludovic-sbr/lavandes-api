@@ -15,8 +15,6 @@ public interface LocationService {
 
     Optional<LocationEntity> findById(Long id);
 
-    Optional<LocationEntity> findBySlotNumber(int slotNumber);
-
     LocationEntity create(LocationEntity location) throws BusinessException;
 
     LocationEntity editLocation(Long id, LocationEntity location) throws BusinessException;

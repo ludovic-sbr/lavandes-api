@@ -37,14 +37,6 @@ public class LocationRepository {
         return Optional.of(locationConverter.convertToEntity(location.get()));
     }
 
-    public Optional<LocationEntity> findBySlotNumber(int slotNumber) {
-        Optional<LocationModel> location = locationJpaRepository.findBySlotNumber(slotNumber);
-
-        if (location.isEmpty()) return Optional.empty();
-
-        return Optional.of(locationConverter.convertToEntity(location.get()));
-    }
-
     public LocationEntity save(LocationEntity location) {
         LocationModel currentLocation = locationConverter.convertToModel(location);
 

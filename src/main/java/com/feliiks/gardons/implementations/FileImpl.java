@@ -33,7 +33,8 @@ public class FileImpl implements FileService {
             if (file.isEmpty())
                 throw new IllegalStateException("Cannot upload empty file");
 
-            String path = String.format("%s/%s", bucketName, UUID.randomUUID());
+            String folder = "locations";
+            String path = String.format("%s/%s", bucketName, folder);
             String fileName = String.format("%s", new Date().getTime()+"-"+file.getOriginalFilename().replaceAll(" ","_"));
 
             // Uploading file to s3

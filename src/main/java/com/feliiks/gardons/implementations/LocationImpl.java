@@ -12,10 +12,7 @@ import com.stripe.model.Product;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class LocationImpl implements LocationService {
@@ -49,11 +46,16 @@ public class LocationImpl implements LocationService {
                         .filter(elt -> Objects.equals(elt.getStatus(), ReservationStatusEnum.COMPLETE))
                         .toList();
 
-        List<LocationEntity> unavailableLocations = completeReservations
+        List<LocationEntity> locationsInThisPeriod = completeReservations
                 .stream()
                 .filter(elt -> elt.getFrom().compareTo(to) < 0 && elt.getTo().compareTo(from) > 0).map(ReservationEntity::getLocation).toList();
 
-         return locations.stream().filter(elt -> unavailableLocations.stream().noneMatch(loc -> Objects.equals(elt.getId(), loc.getId()))).toList();
+        return locations
+                .stream()
+                .filter(loc -> locationsInThisPeriod
+                        .stream()
+                        .filter(elt -> Objects.equals(elt.getId(), loc.getId())).count() < loc.getSlot_remaining())
+                .toList();
     }
 
     @Override
@@ -62,20 +64,7 @@ public class LocationImpl implements LocationService {
     }
 
     @Override
-    public Optional<LocationEntity> findBySlotNumber(int slotNumber) {
-        return locationRepository.findBySlotNumber(slotNumber);
-    }
-
-    @Override
     public LocationEntity create(LocationEntity location) throws BusinessException {
-        Optional<LocationEntity> existingLocation = this.findBySlotNumber(location.getSlot_number());
-
-        if (existingLocation.isPresent()) {
-            String errorMessage = String.format("Une location existe déjà pour le numéro d'emplacement '%s'.", location.getSlot_number());
-
-            throw new BusinessException(errorMessage);
-        }
-
         if (location.getImage() == null) {
             throw new BusinessException("Vous devez fournir une image pour la location.");
         }
@@ -106,7 +95,7 @@ public class LocationImpl implements LocationService {
         newLocation.setMax_persons(location.getMax_persons());
         newLocation.setPrice_per_night(location.getPrice_per_night());
         newLocation.setBedrooms(location.getBedrooms());
-        newLocation.setSlot_number(location.getSlot_number());
+        newLocation.setSlot_remaining(location.getSlot_remaining());
         newLocation.setAvailable(true);
 
         return locationRepository.save(newLocation);
@@ -188,6 +177,10 @@ public class LocationImpl implements LocationService {
 
         if (location.getBedrooms() != 0) {
             existingLocation.get().setBedrooms(location.getBedrooms());
+        }
+
+        if (location.getSlot_remaining() != 0) {
+            existingLocation.get().setSlot_remaining(location.getSlot_remaining());
         }
 
         if (location.getAvailable() != null) {

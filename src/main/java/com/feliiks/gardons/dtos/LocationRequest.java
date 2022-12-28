@@ -1,7 +1,6 @@
 package com.feliiks.gardons.dtos;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class LocationRequest {
@@ -20,5 +19,5 @@ public class LocationRequest {
     int max_persons;
     int price_per_night;
     int bedrooms;
-    int slot_number;
+    int slot_remaining;
 }
