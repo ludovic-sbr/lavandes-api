@@ -26,7 +26,6 @@ public class LocationModel {
     private int max_persons;
     private int price_per_night;
     private int bedrooms;
-    private boolean available;
     private int slot_remaining;
 
     public LocationModel() {
@@ -50,7 +49,6 @@ public class LocationModel {
             int max_persons,
             int price_per_night,
             int bedrooms,
-            boolean available,
             int slot_remaining) {
         this.name = name;
         this.image = image;
@@ -68,7 +66,6 @@ public class LocationModel {
         this.max_persons = max_persons;
         this.price_per_night = price_per_night;
         this.bedrooms = bedrooms;
-        this.available = available;
         this.slot_remaining = slot_remaining;
     }
 
@@ -206,14 +203,6 @@ public class LocationModel {
 
     public void setBedrooms(int bedrooms) {
         this.bedrooms = bedrooms;
-    }
-
-    public boolean getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
     }
 
     public int getSlot_remaining() {

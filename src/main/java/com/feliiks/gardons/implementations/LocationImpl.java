@@ -96,7 +96,6 @@ public class LocationImpl implements LocationService {
         newLocation.setPrice_per_night(location.getPrice_per_night());
         newLocation.setBedrooms(location.getBedrooms());
         newLocation.setSlot_remaining(location.getSlot_remaining());
-        newLocation.setAvailable(true);
 
         return locationRepository.save(newLocation);
     }
@@ -181,10 +180,6 @@ public class LocationImpl implements LocationService {
 
         if (location.getSlot_remaining() != 0) {
             existingLocation.get().setSlot_remaining(location.getSlot_remaining());
-        }
-
-        if (location.getAvailable() != null) {
-            existingLocation.get().setAvailable(location.getAvailable());
         }
 
         return locationRepository.save(existingLocation.get());

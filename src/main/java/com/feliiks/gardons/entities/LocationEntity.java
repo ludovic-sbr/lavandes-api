@@ -18,7 +18,6 @@ public class LocationEntity {
     private int max_persons;
     private int price_per_night;
     private int bedrooms;
-    private boolean available;
     private int slot_remaining;
 
     public LocationEntity() {
@@ -41,7 +40,6 @@ public class LocationEntity {
             int max_persons,
             int price_per_night,
             int bedrooms,
-            boolean available,
             int slot_remaining) {
         this.name = name;
         this.image = image;
@@ -59,7 +57,6 @@ public class LocationEntity {
         this.max_persons = max_persons;
         this.price_per_night = price_per_night;
         this.bedrooms = bedrooms;
-        this.available = available;
         this.slot_remaining = slot_remaining;
     }
 
@@ -197,14 +194,6 @@ public class LocationEntity {
 
     public void setBedrooms(int bedrooms) {
         this.bedrooms = bedrooms;
-    }
-
-    public Boolean getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
     }
 
     public int getSlot_remaining() {
