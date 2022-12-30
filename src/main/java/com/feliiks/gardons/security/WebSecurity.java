@@ -27,7 +27,7 @@ public class WebSecurity implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
+                .allowedOrigins("https://camping-lavandes.com/")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE");
     }
 
