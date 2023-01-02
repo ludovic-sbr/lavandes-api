@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Tag(name = "Reservation")
@@ -93,6 +94,10 @@ public class ReservationController {
         if (currentReservation.isEmpty()) {
             String errorMessage = String.format("La réservation '%s' n'existe pas.", id);
             throw new BusinessException(errorMessage);
+        }
+
+        if (Objects.equals(confirmReservationRequest.getUser_contact(), "")) {
+            throw new BusinessException("Vous devez fournir un numéro de téléphone pour la réservation.");
         }
 
         // Récupération du contact et comment de l'user

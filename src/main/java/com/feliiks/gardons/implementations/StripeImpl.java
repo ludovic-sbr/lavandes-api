@@ -21,8 +21,8 @@ import java.util.Optional;
 public class StripeImpl implements StripeService {
     public final UserService userService;
     private final StripeConverter stripeConverter;
-    String failedUrl = "http://localhost:5173/reservation/complete?status=canceled&session_id={CHECKOUT_SESSION_ID}";
-    String successUrl = "http://localhost:5173/reservation/complete?status=complete&session_id={CHECKOUT_SESSION_ID}";
+    String failedUrl = "https://camping-lavandes.com/reservation/complete?status=canceled&session_id={CHECKOUT_SESSION_ID}";
+    String successUrl = "https://camping-lavandes.com/reservation/complete?status=complete&session_id={CHECKOUT_SESSION_ID}";
     @Value("${app.stripeSecretKey}")
     private String stripeSecretKey;
 
