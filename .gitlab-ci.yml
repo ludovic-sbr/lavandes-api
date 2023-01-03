@@ -1,0 +1,60 @@
+default:
+  image: maven:3.8.6
+
+variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+
+stages:
+  - build
+  - test
+  - release
+  - deploy
+  - performance
+  - cleanup
+
+
+# JOBS ____________________
+build:
+  stage: build
+  image: maven:3.8.6
+  script:
+    - mvn package
+
+test:
+  stage: test
+  image: maven:3.8.6
+  script:
+    - CI=true mvn test
+
+release:
+  stage: release
+  image: docker:stable
+  services:
+    - name: docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build -t $TAG_COMMIT -t $TAG_LATEST .
+    - docker push $TAG_COMMIT
+    - docker push $TAG_LATEST
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  tags:
+    - deployment
+  script:
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $CI_PROJECT_PATH_SLUG || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8000:8000 --name $CI_PROJECT_PATH_SLUG $TAG_COMMIT"
+  environment:
+    name: production
+    url: https://api.camping-lavandes.com
+  only:
+    - main
