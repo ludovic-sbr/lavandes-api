@@ -14,6 +14,21 @@
       "name": "app.stripeSecretKey",
       "type": "java.lang.String",
       "description": "Description for app.stripeSecretKey."
+    },
+    {
+      "name": "amazon.aws.accessKey",
+      "type": "java.lang.String",
+      "description": "Description for amazon.aws.accessKey."
+    },
+    {
+      "name": "amazon.aws.secretKey",
+      "type": "java.lang.String",
+      "description": "Description for amazon.aws.secretKey."
+    },
+    {
+      "name": "aws.s3.bucket.name",
+      "type": "java.lang.String",
+      "description": "Description for aws.s3.bucket.name."
     }
   ]
 }
