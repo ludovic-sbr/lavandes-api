@@ -161,6 +161,9 @@ public class UserImpl implements UserService {
     @Override
     public Optional<UserEntity> deleteById(Long id) throws BusinessException {
         Optional<UserEntity> user = userRepository.findById(id);
+
+        if (user.isEmpty()) return Optional.empty();
+
         List<ReservationEntity> userReservations = findUserReservations(user.get().getId());
 
         userRepository.deleteById(id);

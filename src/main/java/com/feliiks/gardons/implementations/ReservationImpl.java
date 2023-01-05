@@ -224,15 +224,13 @@ public class ReservationImpl implements ReservationService {
 
     @Override
     public Optional<ReservationEntity> deleteById(Long id) {
-        try {
-            Optional<ReservationEntity> reservation = reservationRepository.findById(id);
+        Optional<ReservationEntity> reservation = this.findById(id);
 
-            reservationRepository.deleteById(id);
+        if (reservation.isEmpty()) return Optional.empty();
 
-            return reservation;
-        } catch (EmptyResultDataAccessException err) {
-            return Optional.empty();
-        }
+        reservationRepository.deleteById(id);
+
+        return reservation;
     }
 
     public int totalNights(Date from, Date to) {

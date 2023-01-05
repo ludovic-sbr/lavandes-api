@@ -188,7 +188,7 @@ public class LocationImpl implements LocationService {
     @Override
     public Optional<LocationEntity> deleteById(Long id) {
         try {
-            Optional<LocationEntity> location = locationRepository.findById(id);
+            Optional<LocationEntity> location = this.findById(id);
 
             locationRepository.deleteById(id);
 
