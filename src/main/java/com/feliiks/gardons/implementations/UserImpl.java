@@ -85,7 +85,7 @@ public class UserImpl implements UserService {
             throw new BusinessException("Adresse email incorrecte.");
         }
 
-        if (!patternMatches(user.getPassword(), passwordRegex)) {
+        if (user.getPassword() != null &&  !patternMatches(user.getPassword(), passwordRegex)) {
             String newLine = System.getProperty("line.separator");
             throw new BusinessException("Le mot de passe doit contenir au moins 8 caractères, une majuscule et minuscule, un chiffre et un caractère spécial.");
         }
