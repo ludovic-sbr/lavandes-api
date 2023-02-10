@@ -11,7 +11,6 @@ import com.feliiks.gardons.services.ReservationService;
 import com.feliiks.gardons.services.StripeService;
 import com.feliiks.gardons.services.UserService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;

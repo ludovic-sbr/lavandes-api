@@ -1,7 +1,9 @@
 package com.feliiks.gardons.controllers;
 
 import com.feliiks.gardons.converters.LocationConverter;
-import com.feliiks.gardons.dtos.*;
+import com.feliiks.gardons.dtos.GetLocationsResponse;
+import com.feliiks.gardons.dtos.LocationRequest;
+import com.feliiks.gardons.dtos.LocationResponse;
 import com.feliiks.gardons.entities.FileEntity;
 import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
@@ -21,7 +23,7 @@ import java.util.Optional;
 
 @Tag(name = "Location")
 @RestController
-@RequestMapping("/location")
+@RequestMapping(value = "/location", produces = "application/json; charset=utf-8")
 public class LocationController {
     public final LocationService locationService;
     public final FileService fileService;
@@ -37,7 +39,7 @@ public class LocationController {
     }
 
     @Operation(summary = "List all locations.")
-    @GetMapping(produces = "application/json")
+    @GetMapping()
     public ResponseEntity<GetLocationsResponse> getAllLocations() {
         List<LocationEntity> locations = locationService.findAll();
 
@@ -55,7 +57,7 @@ public class LocationController {
     }
 
     @Operation(summary = "Get a specific location.")
-    @GetMapping(path = "/{id}", produces = "application/json")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<LocationResponse> getLocationById(@PathVariable("id") Long id) throws BusinessException {
         Optional<LocationEntity> location = locationService.findById(id);
 
@@ -82,7 +84,7 @@ public class LocationController {
     }
 
     @Operation(summary = "Partial update a specific location.")
-    @PatchMapping(path = "/{id}", produces = "application/json")
+    @PatchMapping(path = "/{id}")
     public ResponseEntity<LocationResponse> editLocation(@PathVariable("id") Long id, @RequestBody LocationRequest locationRequest) throws BusinessException {
         LocationEntity location = locationConverter.convertToEntity(locationRequest);
         LocationEntity patchedLocation = locationService.editLocation(id, location);
@@ -91,7 +93,7 @@ public class LocationController {
     }
 
     @Operation(summary = "Delete a specific location.")
-    @DeleteMapping(path = "/{id}", produces = "application/json")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<LocationResponse> deleteLocation(@PathVariable("id") Long id) throws BusinessException {
         Optional<LocationEntity> location = locationService.deleteById(id);
 

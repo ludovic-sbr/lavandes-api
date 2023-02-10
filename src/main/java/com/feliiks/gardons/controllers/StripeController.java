@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Payment")
 @RestController
-@RequestMapping("/stripe")
+@RequestMapping(value = "/stripe", produces = "application/json; charset=utf-8")
 public class StripeController {
     public final StripeService stripeService;
     public final ReservationService reservationService;
@@ -26,7 +26,7 @@ public class StripeController {
     }
 
     @Operation(summary = "Get a specific stripe session.")
-    @GetMapping(path = "/checkout-session/{sessionId}", produces = "application/json")
+    @GetMapping(path = "/checkout-session/{sessionId}")
     public ResponseEntity<CheckoutSessionResponse> findCheckoutSessionById(@PathVariable("sessionId") String sessionId) throws BusinessException {
         Session checkoutSession = stripeService.getCheckoutSession(sessionId);
 
@@ -34,7 +34,7 @@ public class StripeController {
     }
 
     @Operation(summary = "Create new charge.")
-    @PostMapping(path = "/checkout-session", produces = "application/json")
+    @PostMapping(path = "/checkout-session")
     public ResponseEntity<CheckoutSessionResponse> charge(@RequestBody CheckoutSessionRequest checkoutSessionRequest) throws BusinessException {
         Session checkoutSession = stripeService.createCheckoutSession(checkoutSessionRequest);
 

@@ -11,6 +11,7 @@ import java.util.Optional;
 @Service
 public interface LocationService {
     List<LocationEntity> findAll();
+
     List<LocationEntity> findAllByPeriod(Date from, Date to);
 
     Optional<LocationEntity> findById(Long id);

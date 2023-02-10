@@ -27,16 +27,13 @@ class UserServiceTests {
 
     @Mock
     ReservationRepository reservationRepository;
-
-    @Mock
-    private RoleService roleService;
-
-    @InjectMocks
-    private UserImpl service;
-
     UserEntity existingUser = new UserEntity();
     RoleEnum existingRoleEnum = RoleEnum.USER;
     RoleEntity existingRole = new RoleEntity(existingRoleEnum.name());
+    @Mock
+    private RoleService roleService;
+    @InjectMocks
+    private UserImpl service;
 
     @BeforeEach
     void setUp() {

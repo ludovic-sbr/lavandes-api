@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Tag(name = "Reservation")
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping(value = "/reservation", produces = "application/json; charset=utf-8")
 public class ReservationController {
 
     public final ReservationService reservationService;
@@ -35,7 +35,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "List all reservations.")
-    @GetMapping(produces = "application/json")
+    @GetMapping()
     public ResponseEntity<GetReservationsResponse> getAllReservations() {
         List<ReservationEntity> reservations = reservationService.findAll();
 
@@ -43,7 +43,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "Get a specific reservation.")
-    @GetMapping(path = "/{id}", produces = "application/json")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<ReservationResponse> getReservationById(@PathVariable("id") Long id) throws BusinessException {
         Optional<ReservationEntity> reservation = reservationService.findById(id);
 
@@ -56,7 +56,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "Get a specific reservation by session id.")
-    @GetMapping(path = "/sessionId/{sessionId}", produces = "application/json")
+    @GetMapping(path = "/sessionId/{sessionId}")
     public ResponseEntity<ReservationResponse> getReservationBySessionId(@PathVariable("sessionId") String sessionId) throws BusinessException {
         Optional<ReservationEntity> reservation = reservationService.findBySessionId(sessionId);
 
@@ -69,7 +69,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "Create a new reservation.")
-    @PostMapping(produces = "application/json")
+    @PostMapping()
     public ResponseEntity<ReservationResponse> saveNewReservation(@RequestBody ReservationRequest reservationRequest) throws BusinessException {
         ReservationEntity reservation = reservationConverter.convertToEntity(reservationRequest);
         ReservationEntity reservationToSave = reservationService.create(reservation);
@@ -78,7 +78,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "Partial update a specific reservation.")
-    @PatchMapping(path = "/{id}", produces = "application/json")
+    @PatchMapping(path = "/{id}")
     public ResponseEntity<ReservationResponse> editReservation(@PathVariable("id") Long id, @RequestBody ReservationRequest reservationRequest) throws BusinessException {
         ReservationEntity reservation = reservationConverter.convertToEntity(reservationRequest);
         ReservationEntity reservationToPatch = reservationService.editReservation(id, reservation);
@@ -87,7 +87,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "Confirm a specific reservation.")
-    @PatchMapping(path = "/{id}/confirm", produces = "application/json")
+    @PatchMapping(path = "/{id}/confirm")
     public ResponseEntity<ConfirmReservationResponse> confirmReservation(@PathVariable("id") Long id, @RequestBody ConfirmReservationRequest confirmReservationRequest) throws BusinessException {
         Optional<ReservationEntity> currentReservation = reservationService.findById(id);
 
@@ -120,7 +120,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "Complete/cancel a specific reservation.")
-    @PatchMapping(path = "/{id}/complete", produces = "application/json")
+    @PatchMapping(path = "/{id}/complete")
     public ResponseEntity<ReservationResponse> completeReservation(@PathVariable("id") Long id, @RequestBody CompleteReservationRequest completeReservationRequest) throws BusinessException {
         Optional<ReservationEntity> currentReservation = reservationService.findById(id);
 
@@ -138,7 +138,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "Delete a specific reservation.")
-    @DeleteMapping(path = "/{id}", produces = "application/json")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<ReservationResponse> deleteReservation(@PathVariable("id") Long id) throws BusinessException {
         Optional<ReservationEntity> reservation = reservationService.deleteById(id);
 
