@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public interface FileService {
     FileEntity saveFile(MultipartFile file) throws BusinessException;
+
     byte[] download(String path, String fileName);
+
     void deleteFile(String url);
 }

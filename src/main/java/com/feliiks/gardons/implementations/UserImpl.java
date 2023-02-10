@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 @Service
 public class UserImpl implements UserService {
@@ -37,6 +37,10 @@ public class UserImpl implements UserService {
         this.reservationRepository = reservationRepository;
     }
 
+    public static boolean patternMatches(String string, Pattern regexPattern) {
+        return regexPattern.matcher(string).matches();
+    }
+
     @Override
     public List<UserEntity> findAll() {
         return userRepository.findAll();
@@ -56,7 +60,6 @@ public class UserImpl implements UserService {
     public Optional<UserEntity> findByGoogleId(String googleId) {
         return userRepository.findByGoogleId(googleId);
     }
-
 
     @Override
     public List<ReservationEntity> findUserReservations(Long id) throws BusinessException {
@@ -85,7 +88,7 @@ public class UserImpl implements UserService {
             throw new BusinessException("Adresse email incorrecte.");
         }
 
-        if (user.getPassword() != null &&  !patternMatches(user.getPassword(), passwordRegex)) {
+        if (user.getPassword() != null && !patternMatches(user.getPassword(), passwordRegex)) {
             String newLine = System.getProperty("line.separator");
             throw new BusinessException("Le mot de passe doit contenir au moins 8 caractères, une majuscule et minuscule, un chiffre et un caractère spécial.");
         }
@@ -170,9 +173,5 @@ public class UserImpl implements UserService {
         userReservations.forEach(elt -> reservationRepository.deleteById(elt.getId()));
 
         return user;
-    }
-
-    public static boolean patternMatches(String string, Pattern regexPattern) {
-        return regexPattern.matcher(string).matches();
     }
 }

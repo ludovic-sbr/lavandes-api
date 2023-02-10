@@ -29,14 +29,12 @@ class ReservationServiceTests {
 
     @Mock
     LocationService locationService;
-
-    @InjectMocks
-    private ReservationImpl service;
-
     ReservationEntity existingReservation = new ReservationEntity();
     ReservationStatusEnum existingReservationStatusEnum = ReservationStatusEnum.OPEN;
     LocationEntity existingLocation = new LocationEntity();
     UserEntity existingUser = new UserEntity();
+    @InjectMocks
+    private ReservationImpl service;
 
     @BeforeEach
     void setUp() {

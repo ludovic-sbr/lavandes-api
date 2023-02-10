@@ -1,6 +1,7 @@
 package com.feliiks.gardons.feliiks.gardons.services;
 
-import com.feliiks.gardons.entities.*;
+import com.feliiks.gardons.entities.FileEntity;
+import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.implementations.LocationImpl;
 import com.feliiks.gardons.repositories.LocationRepository;
@@ -30,13 +31,11 @@ class LocationServiceTests {
 
     @Mock
     ReservationRepository reservationRepository;
-
-    @InjectMocks
-    private LocationImpl service;
-
     LocationEntity existingLocation = new LocationEntity();
     FileEntity existingFile = new FileEntity();
     Product existingProduct = new Product();
+    @InjectMocks
+    private LocationImpl service;
 
     @BeforeEach
     void setUp() {

@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
 
 @Service
 public class FileImpl implements FileService {
 
-    private final AmazonS3 amazonS3;
     public final FileRepository fileRepository;
+    private final AmazonS3 amazonS3;
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
 
@@ -35,7 +35,7 @@ public class FileImpl implements FileService {
 
             String folder = "locations";
             String path = String.format("%s/%s", bucketName, folder);
-            String fileName = String.format("%s", new Date().getTime()+"-"+file.getOriginalFilename().replaceAll(" ","_"));
+            String fileName = String.format("%s", new Date().getTime() + "-" + file.getOriginalFilename().replaceAll(" ", "_"));
 
             // Uploading file to s3
             amazonS3.putObject(new PutObjectRequest(path, fileName, file.getInputStream(), new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead));
@@ -60,15 +60,15 @@ public class FileImpl implements FileService {
     }
 
     public String getPublicUrl(FileEntity file) {
-        return "https://"+file.getPath().substring(0, file.getPath().indexOf('/'))+".s3.eu-west-3.amazonaws.com"+ file.getPath().substring(file.getPath().indexOf('/'))+"/"+file.getName();
+        return "https://" + file.getPath().substring(0, file.getPath().indexOf('/')) + ".s3.eu-west-3.amazonaws.com" + file.getPath().substring(file.getPath().indexOf('/')) + "/" + file.getName();
     }
 
     public String getKey(String url) {
-        return url.substring(url.indexOf("amazonaws.com")+14);
+        return url.substring(url.indexOf("amazonaws.com") + 14);
     }
 
     public void deleteFile(String url) {
-        if(url != null)
+        if (url != null)
             amazonS3.deleteObject(new DeleteObjectRequest(bucketName, getKey(url)));
     }
 

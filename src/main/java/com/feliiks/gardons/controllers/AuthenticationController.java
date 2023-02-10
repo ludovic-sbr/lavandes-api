@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Authentication")
 @RestController
-@RequestMapping("/authenticate")
+@RequestMapping(value = "/authenticate", produces = "application/json; charset=utf-8")
 public class AuthenticationController {
     public final AuthenticationService authenticationService;
     private final UserConverter userConverter;
@@ -31,7 +31,7 @@ public class AuthenticationController {
     }
 
     @Operation(summary = "Authenticate a user.")
-    @PostMapping(produces = "application/json")
+    @PostMapping()
     public ResponseEntity<LoginResponse> authenticateUser(@RequestBody LoginRequest loginRequest) throws AuthenticationException {
         UserEntity user = userConverter.convertToEntity(loginRequest);
 
