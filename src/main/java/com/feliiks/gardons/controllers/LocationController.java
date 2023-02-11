@@ -4,7 +4,6 @@ import com.feliiks.gardons.converters.LocationConverter;
 import com.feliiks.gardons.dtos.GetLocationsResponse;
 import com.feliiks.gardons.dtos.LocationRequest;
 import com.feliiks.gardons.dtos.LocationResponse;
-import com.feliiks.gardons.entities.FileEntity;
 import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.services.FileService;
@@ -74,20 +73,17 @@ public class LocationController {
     public ResponseEntity<LocationResponse> saveNewLocation(LocationRequest locationRequest, @RequestPart("image") final MultipartFile image) throws BusinessException {
         LocationEntity location = locationConverter.convertToEntity(locationRequest);
 
-        FileEntity file = fileService.saveFile(image);
-
-        location.setImage(file);
-
-        LocationEntity savedLocation = locationService.create(location);
+        LocationEntity savedLocation = locationService.create(location, image);
 
         return ResponseEntity.status(201).body(new LocationResponse(savedLocation));
     }
 
     @Operation(summary = "Partial update a specific location.")
-    @PatchMapping(path = "/{id}")
-    public ResponseEntity<LocationResponse> editLocation(@PathVariable("id") Long id, @RequestBody LocationRequest locationRequest) throws BusinessException {
+    @PatchMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LocationResponse> editLocation(@PathVariable("id") Long id, LocationRequest locationRequest, @RequestPart(value = "image", required = false) final MultipartFile image) throws BusinessException {
         LocationEntity location = locationConverter.convertToEntity(locationRequest);
-        LocationEntity patchedLocation = locationService.editLocation(id, location);
+
+        LocationEntity patchedLocation = locationService.editLocation(id, location, image);
 
         return ResponseEntity.status(200).body(new LocationResponse(patchedLocation));
     }
