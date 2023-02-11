@@ -6,6 +6,7 @@ import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.implementations.LocationImpl;
 import com.feliiks.gardons.repositories.LocationRepository;
 import com.feliiks.gardons.repositories.ReservationRepository;
+import com.feliiks.gardons.services.FileService;
 import com.feliiks.gardons.services.StripeService;
 import com.stripe.model.Product;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,10 +33,20 @@ class LocationServiceTests {
     StripeService stripeService;
 
     @Mock
+    FileService fileService;
+
+    String name = "file.txt";
+    String originalFileName = "file.txt";
+    String contentType = "text/plain";
+    byte[] content = null;
+
+    @Mock
     ReservationRepository reservationRepository;
     LocationEntity existingLocation = new LocationEntity();
     FileEntity existingFile = new FileEntity();
     Product existingProduct = new Product();
+    MultipartFile targetFile = new MockMultipartFile(name, originalFileName, contentType, content);
+
     @InjectMocks
     private LocationImpl service;
 
@@ -140,7 +153,7 @@ class LocationServiceTests {
         Mockito.when(stripeService.findProductById(existingLocation.getStripeProductId())).thenReturn(Optional.of(existingProduct));
         Mockito.when(locationRepository.save(Mockito.any(LocationEntity.class))).thenReturn(target);
 
-        LocationEntity actual = service.create(existingLocation);
+        LocationEntity actual = service.create(existingLocation, targetFile);
 
         Assertions.assertEquals(target, actual);
     }
@@ -152,7 +165,7 @@ class LocationServiceTests {
 
         Mockito.when(locationRepository.save(Mockito.any(LocationEntity.class))).thenReturn(target);
 
-        Assertions.assertThrows(BusinessException.class, () -> service.create(existingLocation));
+        Assertions.assertThrows(BusinessException.class, () -> service.create(existingLocation, targetFile));
     }
 
     @Test
@@ -162,7 +175,7 @@ class LocationServiceTests {
         Mockito.when(stripeService.findProductById(existingLocation.getStripeProductId())).thenReturn(Optional.empty());
         Mockito.when(locationRepository.save(Mockito.any(LocationEntity.class))).thenReturn(target);
 
-        Assertions.assertThrows(BusinessException.class, () -> service.create(existingLocation));
+        Assertions.assertThrows(BusinessException.class, () -> service.create(existingLocation, targetFile));
     }
 
     @Test
@@ -173,7 +186,7 @@ class LocationServiceTests {
         Mockito.when(stripeService.findProductById(existingLocation.getStripeProductId())).thenReturn(Optional.of(existingProduct));
         Mockito.when(locationRepository.save(Mockito.any(LocationEntity.class))).thenReturn(target);
 
-        LocationEntity actual = service.editLocation(existingLocation.getId(), existingLocation);
+        LocationEntity actual = service.editLocation(existingLocation.getId(), existingLocation, targetFile);
 
         Assertions.assertEquals(target, actual);
     }
@@ -185,7 +198,7 @@ class LocationServiceTests {
         Mockito.when(service.findById(existingLocation.getId())).thenReturn(Optional.empty());
         Mockito.when(locationRepository.save(Mockito.any(LocationEntity.class))).thenReturn(target);
 
-        Assertions.assertThrows(BusinessException.class, () -> service.create(existingLocation));
+        Assertions.assertThrows(BusinessException.class, () -> service.create(existingLocation, targetFile));
     }
 
     @Test
@@ -196,7 +209,7 @@ class LocationServiceTests {
         Mockito.when(stripeService.findProductById(existingLocation.getStripeProductId())).thenReturn(Optional.empty());
         Mockito.when(locationRepository.save(Mockito.any(LocationEntity.class))).thenReturn(target);
 
-        Assertions.assertThrows(BusinessException.class, () -> service.create(existingLocation));
+        Assertions.assertThrows(BusinessException.class, () -> service.create(existingLocation, targetFile));
     }
 
     @Test

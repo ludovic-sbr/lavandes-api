@@ -1,16 +1,19 @@
 package com.feliiks.gardons.implementations;
 
+import com.feliiks.gardons.entities.FileEntity;
 import com.feliiks.gardons.entities.LocationEntity;
 import com.feliiks.gardons.entities.ReservationEntity;
 import com.feliiks.gardons.entities.ReservationStatusEnum;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.LocationRepository;
 import com.feliiks.gardons.repositories.ReservationRepository;
+import com.feliiks.gardons.services.FileService;
 import com.feliiks.gardons.services.LocationService;
 import com.feliiks.gardons.services.StripeService;
 import com.stripe.model.Product;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -22,13 +25,16 @@ public class LocationImpl implements LocationService {
     public final LocationRepository locationRepository;
     public final StripeService stripeService;
     public final ReservationRepository reservationRepository;
+    public final FileService fileService;
 
     public LocationImpl(
             LocationRepository locationRepository,
             StripeService stripeService,
+            FileService fileService,
             ReservationRepository reservationRepository) {
         this.locationRepository = locationRepository;
         this.stripeService = stripeService;
+        this.fileService = fileService;
         this.reservationRepository = reservationRepository;
     }
 
@@ -67,8 +73,8 @@ public class LocationImpl implements LocationService {
     }
 
     @Override
-    public LocationEntity create(LocationEntity location) throws BusinessException {
-        if (location.getImage() == null) {
+    public LocationEntity create(LocationEntity location, MultipartFile image) throws BusinessException {
+        if (image == null) {
             throw new BusinessException("Vous devez fournir une image pour la location.");
         }
 
@@ -83,8 +89,10 @@ public class LocationImpl implements LocationService {
         }
         newLocation.setStripeProductId(location.getStripeProductId());
 
+        FileEntity file = fileService.saveFile(image);
+
         newLocation.setName(location.getName());
-        newLocation.setImage(location.getImage());
+        newLocation.setImage(file);
         newLocation.setDescription(location.getDescription());
         newLocation.setParking(location.getParking());
         newLocation.setKitchen(location.getKitchen());
@@ -104,7 +112,7 @@ public class LocationImpl implements LocationService {
     }
 
     @Override
-    public LocationEntity editLocation(Long id, LocationEntity location) throws BusinessException {
+    public LocationEntity editLocation(Long id, LocationEntity location, MultipartFile image) throws BusinessException {
         Optional<LocationEntity> existingLocation = this.findById(id);
 
         if (existingLocation.isEmpty()) {
@@ -127,6 +135,12 @@ public class LocationImpl implements LocationService {
 
         if (location.getName() != null) {
             existingLocation.get().setName(location.getName());
+        }
+
+        if (image != null) {
+            FileEntity file = fileService.saveFile(image);
+
+            existingLocation.get().setImage(file);
         }
 
         if (location.getDescription() != null) {
