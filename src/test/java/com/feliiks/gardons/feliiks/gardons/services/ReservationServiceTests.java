@@ -300,12 +300,17 @@ class ReservationServiceTests {
     public void editWithLocationDoesNotExistsException() {
         ReservationEntity target = existingReservation;
 
+        ReservationEntity fakePatch = new ReservationEntity();
+        LocationEntity fakeLocation = new LocationEntity();
+        fakeLocation.setId(888L);
+        fakePatch.setLocation(fakeLocation);
+
         Mockito.when(service.findById(existingReservation.getId())).thenReturn(Optional.of(existingReservation));
         Mockito.when(userService.findById(existingReservation.getUser().getId())).thenReturn(Optional.of(existingUser));
         Mockito.when(locationService.findById(existingReservation.getLocation().getId())).thenReturn(Optional.empty());
         Mockito.when(reservationRepository.save(Mockito.any(ReservationEntity.class))).thenReturn(target);
 
-        Assertions.assertThrows(BusinessException.class, () -> service.editReservation(existingReservation.getId(), existingReservation));
+        Assertions.assertThrows(BusinessException.class, () -> service.editReservation(existingReservation.getId(), fakePatch));
     }
 
     @Test
@@ -313,6 +318,11 @@ class ReservationServiceTests {
         ReservationEntity target = existingReservation;
 
         existingLocation.setSlot_remaining(0);
+
+        ReservationEntity fakePatch = new ReservationEntity();
+        LocationEntity fakeLocation = new LocationEntity();
+        fakeLocation.setId(888L);
+        fakePatch.setLocation(fakeLocation);
 
         ReservationEntity conflictualReservation = new ReservationEntity();
         conflictualReservation.setFrom(new Date());
@@ -325,7 +335,7 @@ class ReservationServiceTests {
         Mockito.when(service.findByLocation(existingReservation.getLocation())).thenReturn(List.of(conflictualReservation));
         Mockito.when(reservationRepository.save(Mockito.any(ReservationEntity.class))).thenReturn(target);
 
-        Assertions.assertThrows(BusinessException.class, () -> service.editReservation(existingReservation.getId(), existingReservation));
+        Assertions.assertThrows(BusinessException.class, () -> service.editReservation(existingReservation.getId(), fakePatch));
     }
 
     @Test
