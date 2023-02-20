@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class ReservationRequest {
+public class PostReservationRequest {
     Long user_id;
     Long location_id;
     int adult_nbr;

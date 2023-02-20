@@ -70,7 +70,7 @@ public class ReservationController {
 
     @Operation(summary = "Create a new reservation.")
     @PostMapping()
-    public ResponseEntity<ReservationResponse> saveNewReservation(@RequestBody ReservationRequest reservationRequest) throws BusinessException {
+    public ResponseEntity<ReservationResponse> saveNewReservation(@RequestBody PostReservationRequest reservationRequest) throws BusinessException {
         ReservationEntity reservation = reservationConverter.convertToEntity(reservationRequest);
         ReservationEntity reservationToSave = reservationService.create(reservation);
 
@@ -79,7 +79,7 @@ public class ReservationController {
 
     @Operation(summary = "Partial update a specific reservation.")
     @PatchMapping(path = "/{id}")
-    public ResponseEntity<ReservationResponse> editReservation(@PathVariable("id") Long id, @RequestBody ReservationRequest reservationRequest) throws BusinessException {
+    public ResponseEntity<ReservationResponse> editReservation(@PathVariable("id") Long id, @RequestBody PatchReservationRequest reservationRequest) throws BusinessException {
         ReservationEntity reservation = reservationConverter.convertToEntity(reservationRequest);
         ReservationEntity reservationToPatch = reservationService.editReservation(id, reservation);
 
@@ -117,24 +117,6 @@ public class ReservationController {
         ReservationEntity reservationToPatch = reservationService.editReservation(currentReservation.get().getId(), patch);
 
         return ResponseEntity.status(200).body(new ConfirmReservationResponse(reservationToPatch, checkoutSession.getUrl()));
-    }
-
-    @Operation(summary = "Complete/cancel a specific reservation.")
-    @PatchMapping(path = "/{id}/complete")
-    public ResponseEntity<ReservationResponse> completeReservation(@PathVariable("id") Long id, @RequestBody CompleteReservationRequest completeReservationRequest) throws BusinessException {
-        Optional<ReservationEntity> currentReservation = reservationService.findById(id);
-
-        if (currentReservation.isEmpty()) {
-            String errorMessage = String.format("La réservation '%s' n'existe pas.", id);
-            throw new BusinessException(errorMessage);
-        }
-
-        ReservationEntity patch = new ReservationEntity();
-        patch.setStatus(completeReservationRequest.getStatus());
-
-        ReservationEntity reservationToPatch = reservationService.editReservation(currentReservation.get().getId(), patch);
-
-        return ResponseEntity.status(200).body(new ReservationResponse(reservationToPatch));
     }
 
     @Operation(summary = "Delete a specific reservation.")

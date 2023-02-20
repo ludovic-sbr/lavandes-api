@@ -74,49 +74,43 @@ public class ReservationImpl implements ReservationService {
 
     @Override
     public ReservationEntity create(ReservationEntity reservation) throws BusinessException {
-        // Validité de la date
+        // VALIDITE DES DATES
         if (reservation.getFrom().compareTo(reservation.getTo()) > 0) {
             String errorMessage = "La date de début ne peut être supérieure à la date de fin.";
             throw new BusinessException(errorMessage);
         }
 
-        // Calcul du nombre de nuits
+        // CALCUL NOMBRE DE NUITS
         int nightNumber = this.totalNights(reservation.getFrom(), reservation.getTo());
 
-        // Validité de l'user et de la location
+        // VALIDITE DE L'USER
         Optional<UserEntity> user = userService.findById(reservation.getUser().getId());
+
+        if (user.isEmpty()) {
+            String errorMessage = String.format("L'utilisateur '%s' n'existe pas.", reservation.getUser().getId());
+            throw new BusinessException(errorMessage);
+        }
+
+        // VALIDITE DE LA LOCATION/PERIODE CHOISIE
         Optional<LocationEntity> location = locationService.findById(reservation.getLocation().getId());
 
-        if (user.isEmpty() || location.isEmpty()) {
-            String errorMessage = "Utilisateur ou location inexistant.";
+        if (location.isEmpty()) {
+            String errorMessage = String.format("La location '%s' n'existe pas.", reservation.getLocation().getId());
             throw new BusinessException(errorMessage);
         }
 
-        // Validité de la période choisie
-        List<ReservationEntity> existingReservations = this.findByLocation(location.get());
+        boolean isReservationPeriodValid = isReservationPeriodValid(location.get(), reservation.getFrom(), reservation.getTo());
 
-        List<ReservationEntity> completeReservations =
-                existingReservations
-                        .stream()
-                        .filter(elt -> Objects.equals(elt.getStatus(), ReservationStatusEnum.COMPLETE))
-                        .toList();
-
-        long conflictualReservations =
-                completeReservations
-                        .stream()
-                        .filter(elt -> elt.getFrom().compareTo(reservation.getTo()) < 0 && elt.getTo().compareTo(reservation.getFrom()) > 0)
-                        .count();
-
-        if (conflictualReservations >= location.get().getSlot_remaining()) {
-            String errorMessage = "La location sélectionnée n'est pas disponible sur la période choisie.";
+        if (!isReservationPeriodValid) {
+            String errorMessage = "Aucune location de ce type disponible sur la période choisie.";
             throw new BusinessException(errorMessage);
         }
 
-        // Création de la réservation
+        // CREATION DE LA RESERVATION
         ReservationEntity newReservation = new ReservationEntity();
         newReservation.setUser(user.get());
         newReservation.setLocation(location.get());
-        newReservation.setReservation_key(StringUtils.substring(String.valueOf(sr.nextLong()), 2, 10));
+        newReservation.setReservation_key(generateReservationKey());
         newReservation.setAdult_nbr(reservation.getAdult_nbr());
         newReservation.setChild_nbr(reservation.getChild_nbr());
         newReservation.setAnimal_nbr(reservation.getAnimal_nbr());
@@ -136,13 +130,13 @@ public class ReservationImpl implements ReservationService {
     public ReservationEntity editReservation(Long id, ReservationEntity reservation) throws BusinessException {
         Optional<ReservationEntity> existingReservation = this.findById(id);
 
-        // Check de l'existence de la résa
+        // VALIDITE DE LA RESERVATION
         if (existingReservation.isEmpty()) {
             String errorMessage = String.format("La réservation '%s' n'existe pas.", id);
             throw new BusinessException(errorMessage);
         }
 
-        // Update des champs
+        // MISE A JOURS DES CHAMPS AVEC CHECK
         if (reservation.getUser() != null && reservation.getUser().getId() != null) {
             Optional<UserEntity> user = userService.findById(reservation.getUser().getId());
 
@@ -154,7 +148,7 @@ public class ReservationImpl implements ReservationService {
             existingReservation.get().setUser(user.get());
         }
 
-        if (reservation.getLocation() != null && reservation.getLocation().getId() != null) {
+        if (reservation.getLocation() != null && reservation.getLocation().getId() != null && !Objects.equals(reservation.getLocation().getId(), existingReservation.get().getLocation().getId())) {
             Optional<LocationEntity> location = locationService.findById(reservation.getLocation().getId());
 
             if (location.isEmpty()) {
@@ -162,22 +156,10 @@ public class ReservationImpl implements ReservationService {
                 throw new BusinessException(errorMessage);
             }
 
-            List<ReservationEntity> existingReservations = this.findByLocation(location.get());
+            boolean isReservationPeriodValid = isReservationPeriodValid(location.get(), existingReservation.get().getFrom(), existingReservation.get().getTo());
 
-            List<ReservationEntity> completeReservations =
-                    existingReservations
-                            .stream()
-                            .filter(elt -> Objects.equals(elt.getStatus(), ReservationStatusEnum.COMPLETE))
-                            .toList();
-
-            long conflictualReservations =
-                    completeReservations
-                            .stream()
-                            .filter(elt -> elt.getFrom().compareTo(existingReservation.get().getTo()) < 0 && elt.getTo().compareTo(existingReservation.get().getFrom()) > 0)
-                            .count();
-
-            if (conflictualReservations > 0) {
-                String errorMessage = "La location sélectionnée n'est pas disponible sur la période choisie.";
+            if (!isReservationPeriodValid) {
+                String errorMessage = "Aucune location de ce type disponible sur la période choisie.";
                 throw new BusinessException(errorMessage);
             }
 
@@ -199,10 +181,6 @@ public class ReservationImpl implements ReservationService {
 
         if (reservation.getVehicle_nbr() != 0) {
             existingReservation.get().setVehicle_nbr(reservation.getVehicle_nbr());
-        }
-
-        if (reservation.getStripe_session_id() != null) {
-            existingReservation.get().setStripe_session_id((reservation.getStripe_session_id()));
         }
 
         if (reservation.getStatus() != null) {
@@ -238,5 +216,36 @@ public class ReservationImpl implements ReservationService {
 
     public int totalPrice(int nightNumber, int pricePerNight) {
         return nightNumber * pricePerNight;
+    }
+
+    public String generateReservationKey() {
+        List<ReservationEntity> reservations = reservationRepository.findAll();
+
+        String reservationKey = StringUtils.substring(String.valueOf(sr.nextLong()), 2, 10);
+
+        String finalReservationKey = reservationKey;
+        while(reservations.stream().anyMatch(elt -> Objects.equals(elt.getReservation_key(), finalReservationKey))) {
+            reservationKey = StringUtils.substring(String.valueOf(sr.nextLong()), 2, 10);
+        }
+
+        return reservationKey;
+    }
+
+    public boolean isReservationPeriodValid(LocationEntity location, Date from, Date to) {
+        List<ReservationEntity> existingReservations = this.findByLocation(location);
+
+        List<ReservationEntity> completeReservations =
+                existingReservations
+                        .stream()
+                        .filter(elt -> Objects.equals(elt.getStatus(), ReservationStatusEnum.COMPLETE))
+                        .toList();
+
+        long conflictualReservations =
+                completeReservations
+                        .stream()
+                        .filter(elt -> elt.getFrom().compareTo(to) < 0 && elt.getTo().compareTo(from) > 0)
+                        .count();
+
+        return conflictualReservations < location.getSlot_remaining();
     }
 }
