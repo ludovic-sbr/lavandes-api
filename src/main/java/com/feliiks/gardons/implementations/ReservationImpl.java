@@ -119,6 +119,7 @@ public class ReservationImpl implements ReservationService {
         newReservation.setTo(reservation.getTo());
         newReservation.setNight_number(nightNumber);
         newReservation.setTotal_price(this.totalPrice(location.get().getPrice_per_night(), nightNumber));
+        newReservation.setStripe_session_id(null);
         newReservation.setStatus(ReservationStatusEnum.OPEN);
         newReservation.setUser_contact(null);
         newReservation.setUser_comment(null);
@@ -181,6 +182,10 @@ public class ReservationImpl implements ReservationService {
 
         if (reservation.getVehicle_nbr() != 0) {
             existingReservation.get().setVehicle_nbr(reservation.getVehicle_nbr());
+        }
+
+        if (reservation.getStripe_session_id() != null) {
+            existingReservation.get().setStripe_session_id(reservation.getStripe_session_id());
         }
 
         if (reservation.getStatus() != null) {
