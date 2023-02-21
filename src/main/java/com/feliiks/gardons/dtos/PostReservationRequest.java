@@ -1,6 +1,5 @@
 package com.feliiks.gardons.dtos;
 
-import com.feliiks.gardons.entities.ReservationStatusEnum;
 import lombok.Data;
 
 import java.util.Date;
@@ -15,7 +14,6 @@ public class PostReservationRequest {
     int vehicle_nbr;
     Date from;
     Date to;
-    ReservationStatusEnum status;
     String user_contact;
     String user_comment;
 }

@@ -121,8 +121,8 @@ public class ReservationImpl implements ReservationService {
         newReservation.setTotal_price(this.totalPrice(location.get().getPrice_per_night(), nightNumber));
         newReservation.setStripe_session_id(null);
         newReservation.setStatus(ReservationStatusEnum.OPEN);
-        newReservation.setUser_contact(null);
-        newReservation.setUser_comment(null);
+        newReservation.setUser_contact(reservation.getUser_contact());
+        newReservation.setUser_comment(reservation.getUser_comment());
 
         return reservationRepository.save(newReservation);
     }
