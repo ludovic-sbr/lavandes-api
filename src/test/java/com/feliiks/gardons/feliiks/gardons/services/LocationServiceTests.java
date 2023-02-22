@@ -213,11 +213,12 @@ class LocationServiceTests {
     }
 
     @Test
-    public void deleteByIdSuccessfully() {
+    public void deleteByIdSuccessfully() throws BusinessException {
         Optional<LocationEntity> target = Optional.of(existingLocation);
 
         Mockito.when(service.findById(existingLocation.getId())).thenReturn(target);
         Mockito.doNothing().when(locationRepository).deleteById(Mockito.anyLong());
+        Mockito.doNothing().when(reservationRepository).deleteById(Mockito.anyLong());
 
         Optional<LocationEntity> actual = service.deleteById(existingLocation.getId());
 
@@ -225,11 +226,12 @@ class LocationServiceTests {
     }
 
     @Test
-    public void deleteByIdIsEmpty() {
+    public void deleteByIdIsEmpty() throws BusinessException {
         Optional<LocationEntity> target = Optional.empty();
 
         Mockito.when(service.findById(existingLocation.getId())).thenReturn(Optional.empty());
         Mockito.doNothing().when(locationRepository).deleteById(Mockito.anyLong());
+        Mockito.doNothing().when(reservationRepository).deleteById(Mockito.anyLong());
 
         Optional<LocationEntity> actual = service.deleteById(existingLocation.getId());
 

@@ -1,8 +1,11 @@
 package com.feliiks.gardons.repositories;
 
 import com.feliiks.gardons.converters.LocationConverter;
+import com.feliiks.gardons.converters.ReservationConverter;
 import com.feliiks.gardons.entities.LocationEntity;
+import com.feliiks.gardons.entities.ReservationEntity;
 import com.feliiks.gardons.models.LocationModel;
+import com.feliiks.gardons.models.ReservationModel;
 import com.feliiks.gardons.repositories.jpa.LocationJpaRepository;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +18,15 @@ public class LocationRepository {
 
     private final LocationJpaRepository locationJpaRepository;
     private final LocationConverter locationConverter;
+    private final ReservationConverter reservationConverter;
 
     public LocationRepository(
             LocationJpaRepository locationJpaRepository,
-            LocationConverter locationConverter) {
+            LocationConverter locationConverter,
+            ReservationConverter reservationConverter) {
         this.locationJpaRepository = locationJpaRepository;
         this.locationConverter = locationConverter;
+        this.reservationConverter = reservationConverter;
     }
 
     public List<LocationEntity> findAll() {
@@ -35,6 +41,12 @@ public class LocationRepository {
         if (location.isEmpty()) return Optional.empty();
 
         return Optional.of(locationConverter.convertToEntity(location.get()));
+    }
+
+    public List<ReservationEntity> findLocationReservations(Long id) {
+        List<ReservationModel> locationReservations = locationJpaRepository.findLocationReservations(id);
+
+        return locationReservations.stream().map(reservationConverter::convertToEntity).toList();
     }
 
     public LocationEntity save(LocationEntity location) {

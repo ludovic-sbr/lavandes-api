@@ -232,4 +232,16 @@ class UserServiceTests {
 
         Assertions.assertEquals(target, actual);
     }
+
+    @Test
+    public void deleteByIdWithSpecialUser() {
+        Optional<UserEntity> target = Optional.of(existingUser);
+        existingUser.setRole(new RoleEntity("DEVELOPER"));
+
+        Mockito.when(service.findById(existingUser.getId())).thenReturn(target);
+        Mockito.doNothing().when(userRepository).deleteById(Mockito.anyLong());
+        Mockito.doNothing().when(reservationRepository).deleteById(Mockito.anyLong());
+
+        Assertions.assertThrows(BusinessException.class, () -> service.deleteById(existingUser.getId()));
+    }
 }
