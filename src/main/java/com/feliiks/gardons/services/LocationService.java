@@ -1,6 +1,7 @@
 package com.feliiks.gardons.services;
 
 import com.feliiks.gardons.entities.LocationEntity;
+import com.feliiks.gardons.entities.ReservationEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +18,11 @@ public interface LocationService {
 
     Optional<LocationEntity> findById(Long id);
 
+    List<ReservationEntity> findLocationReservations(Long id) throws BusinessException;
+
     LocationEntity create(LocationEntity location, MultipartFile image) throws BusinessException;
 
     LocationEntity editLocation(Long id, LocationEntity location, MultipartFile image) throws BusinessException;
 
-    Optional<LocationEntity> deleteById(Long id);
+    Optional<LocationEntity> deleteById(Long id) throws BusinessException;
 }

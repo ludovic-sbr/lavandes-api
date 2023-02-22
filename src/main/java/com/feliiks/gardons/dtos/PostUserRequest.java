@@ -3,7 +3,7 @@ package com.feliiks.gardons.dtos;
 import lombok.Data;
 
 @Data
-public class UserRequest {
+public class PostUserRequest {
     String firstname;
     String lastname;
     String email;

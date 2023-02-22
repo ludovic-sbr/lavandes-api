@@ -1,7 +1,8 @@
 package com.feliiks.gardons.converters;
 
 import com.feliiks.gardons.dtos.LoginRequest;
-import com.feliiks.gardons.dtos.UserRequest;
+import com.feliiks.gardons.dtos.PatchUserRequest;
+import com.feliiks.gardons.dtos.PostUserRequest;
 import com.feliiks.gardons.entities.RoleEntity;
 import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.models.UserModel;
@@ -37,8 +38,19 @@ public class UserConverter {
         return mapper.map(loginRequest, UserEntity.class);
     }
 
-    public UserEntity convertToEntity(UserRequest userRequest) {
-        mapper.typeMap(UserRequest.class, UserEntity.class).addMappings(elt -> elt.skip(UserEntity::setId));
+    public UserEntity convertToEntity(PostUserRequest userRequest) {
+        mapper.typeMap(PostUserRequest.class, UserEntity.class).addMappings(elt -> elt.skip(UserEntity::setId));
+
+        UserEntity userEntity = mapper.map(userRequest, UserEntity.class);
+
+        userEntity.setRole(new RoleEntity(userRequest.getRoleName()));
+
+        return userEntity;
+    }
+
+    public UserEntity convertToEntity(PatchUserRequest userRequest) {
+        mapper.typeMap(PatchUserRequest.class, UserEntity.class).addMappings(elt -> elt.skip(UserEntity::setId));
+        mapper.typeMap(PatchUserRequest.class, UserEntity.class).addMappings(elt -> elt.skip(UserEntity::setGoogle_id));
 
         UserEntity userEntity = mapper.map(userRequest, UserEntity.class);
 

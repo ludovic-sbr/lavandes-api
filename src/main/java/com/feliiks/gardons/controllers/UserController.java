@@ -1,10 +1,7 @@
 package com.feliiks.gardons.controllers;
 
 import com.feliiks.gardons.converters.UserConverter;
-import com.feliiks.gardons.dtos.GetReservationsResponse;
-import com.feliiks.gardons.dtos.GetUsersResponse;
-import com.feliiks.gardons.dtos.UserRequest;
-import com.feliiks.gardons.dtos.UserResponse;
+import com.feliiks.gardons.dtos.*;
 import com.feliiks.gardons.entities.ReservationEntity;
 import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
@@ -86,7 +83,7 @@ public class UserController {
 
     @Operation(summary = "Create a new user.")
     @PostMapping()
-    public ResponseEntity<UserResponse> saveNewUser(@RequestBody UserRequest userRequest) throws BusinessException {
+    public ResponseEntity<UserResponse> saveNewUser(@RequestBody PostUserRequest userRequest) throws BusinessException {
         UserEntity user = userConverter.convertToEntity(userRequest);
 
         if (userRequest.getPassword() != null && !Objects.equals(userRequest.getPassword(), userRequest.getRepeat_password())) {
@@ -100,7 +97,7 @@ public class UserController {
 
     @Operation(summary = "Partial update a specific user.")
     @PatchMapping(path = "/{id}")
-    public ResponseEntity<UserResponse> editUser(@PathVariable("id") Long id, @RequestBody UserRequest userRequest) throws BusinessException {
+    public ResponseEntity<UserResponse> editUser(@PathVariable("id") Long id, @RequestBody PatchUserRequest userRequest) throws BusinessException {
         UserEntity user = userConverter.convertToEntity(userRequest);
 
         if (userRequest.getPassword() != null && !Objects.equals(userRequest.getPassword(), userRequest.getRepeat_password())) {

@@ -2,6 +2,7 @@ package com.feliiks.gardons.implementations;
 
 import com.feliiks.gardons.entities.ReservationEntity;
 import com.feliiks.gardons.entities.RoleEntity;
+import com.feliiks.gardons.entities.RoleEnum;
 import com.feliiks.gardons.entities.UserEntity;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.ReservationRepository;
@@ -166,6 +167,12 @@ public class UserImpl implements UserService {
         Optional<UserEntity> user = userRepository.findById(id);
 
         if (user.isEmpty()) return Optional.empty();
+
+        if (Objects.equals(user.get().getRole().getName(), RoleEnum.DEVELOPER.name())) {
+            String errorMessage = String.format("L'utilisateur '%s' ne peut être supprimé. ", user.get().getId());
+
+            throw new BusinessException(errorMessage);
+        }
 
         List<ReservationEntity> userReservations = findUserReservations(user.get().getId());
 

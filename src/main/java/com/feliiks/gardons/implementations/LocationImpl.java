@@ -1,9 +1,6 @@
 package com.feliiks.gardons.implementations;
 
-import com.feliiks.gardons.entities.FileEntity;
-import com.feliiks.gardons.entities.LocationEntity;
-import com.feliiks.gardons.entities.ReservationEntity;
-import com.feliiks.gardons.entities.ReservationStatusEnum;
+import com.feliiks.gardons.entities.*;
 import com.feliiks.gardons.exceptions.BusinessException;
 import com.feliiks.gardons.repositories.LocationRepository;
 import com.feliiks.gardons.repositories.ReservationRepository;
@@ -70,6 +67,19 @@ public class LocationImpl implements LocationService {
     @Override
     public Optional<LocationEntity> findById(Long id) {
         return locationRepository.findById(id);
+    }
+
+    @Override
+    public List<ReservationEntity> findLocationReservations(Long id) throws BusinessException {
+        Optional<LocationEntity> location = this.findById(id);
+
+        if (location.isEmpty()) {
+            String errorMessage = String.format("La location '%s' n'existe pas.", id);
+
+            throw new BusinessException(errorMessage);
+        }
+
+        return locationRepository.findLocationReservations(location.get().getId());
     }
 
     @Override
@@ -203,15 +213,16 @@ public class LocationImpl implements LocationService {
     }
 
     @Override
-    public Optional<LocationEntity> deleteById(Long id) {
-        try {
-            Optional<LocationEntity> location = this.findById(id);
+    public Optional<LocationEntity> deleteById(Long id) throws BusinessException {
+        Optional<LocationEntity> location = this.findById(id);
 
-            locationRepository.deleteById(id);
+        if (location.isEmpty()) return Optional.empty();
 
-            return location;
-        } catch (EmptyResultDataAccessException err) {
-            return Optional.empty();
-        }
+        List<ReservationEntity> attachedReservations = findLocationReservations(location.get().getId());
+
+        locationRepository.deleteById(id);
+        attachedReservations.forEach(elt -> reservationRepository.deleteById(elt.getId()));
+
+        return location;
     }
 }
