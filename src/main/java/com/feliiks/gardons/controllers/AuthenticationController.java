@@ -39,4 +39,14 @@ public class AuthenticationController {
 
         return ResponseEntity.status(200).body(new LoginResponse(token.getValue()));
     }
+
+    @Operation(summary = "Authenticate an admin user.")
+    @PostMapping(path = "/admin")
+    public ResponseEntity<LoginResponse> authenticateAdminUser(@RequestBody LoginRequest loginRequest) throws AuthenticationException {
+        UserEntity user = userConverter.convertToEntity(loginRequest);
+
+        TokenModel token = authenticationService.adminAuthenticate(user);
+
+        return ResponseEntity.status(200).body(new LoginResponse(token.getValue()));
+    }
 }

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AuthenticationService {
     TokenModel authenticate(UserEntity user) throws AuthenticationException;
+    TokenModel adminAuthenticate(UserEntity user) throws AuthenticationException;
 }
