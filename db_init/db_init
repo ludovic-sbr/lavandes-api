@@ -1,7 +1,21 @@
+CREATE DATABASE IF NOT EXISTS lavandesdb;
+
+USE lavandesdb;
+
+CREATE TABLE IF NOT EXISTS files (`id` bigint not null auto_increment, `name` varchar(255), `path` varchar(255), `public_url` varchar(255), primary key (`id`));
+CREATE TABLE IF NOT EXISTS locations (`id` bigint not null auto_increment, `air_conditioner` bit not null, `barbecue` bit not null, `bedrooms` integer not null, `description` varchar(255), `heater` bit not null, `kitchen` bit not null, `max_persons` integer not null, `name` varchar(255), `parking` bit not null, `price_per_night` integer not null, `sanitary` bit not null, `slot_remaining` integer not null, `stripe_product_id` varchar(255), `surface` integer not null, `terrace` bit not null, `wifi` bit not null, `image_id` bigint, primary key (`id`));
+CREATE TABLE IF NOT EXISTS reservations (`id` bigint not null auto_increment, `adult_nbr` integer not null, `animal_nbr` integer not null, `child_nbr` integer not null, `from` datetime, `night_number` integer not null, `reservation_key` varchar(255), `status` varchar(255), `stripe_session_id` varchar(255), `to` datetime, `total_price` integer not null, `user_comment` varchar(255), `user_contact` varchar(255), `vehicle_nbr` integer not null, `location_id` bigint, `user_id` bigint, primary key (`id`));
+CREATE TABLE IF NOT EXISTS roles (`id` bigint not null auto_increment, `name` varchar(255), primary key (`id`));
+CREATE TABLE IF NOT EXISTS users (`id` bigint not null auto_increment, `email` varchar(255), `firstname` varchar(255), `google_id` varchar(255), `lastname` varchar(255), `password` varchar(255), `role_id` bigint not null, primary key (`id`));
+
+ALTER TABLE `locations` ADD CONSTRAINT `FKiks0viu3x6ug7gtcjw12hf7i9` FOREIGN KEY (`image_id`) REFERENCES `files` (`id`);
+ALTER TABLE `reservations` ADD CONSTRAINT `FKki96cfn0upus8xmsiw7vjnfeb` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`);
+ALTER TABLE `reservations` ADD CONSTRAINT `FKbqc054ubmoqj00bl3mey759qx` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `users` ADD CONSTRAINT `FKp5sxbjiwpsgy5kuqrhpqi5tod` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`);
+
 INSERT INTO `files` (`id`, `name`, `path`, `public_url`) VALUES (3, '1673871306119-loc-5p.jpg', 'lavandes/locations', 'https://lavandes.s3.eu-west-3.amazonaws.com/locations/1673871306119-loc-5p.jpg');
 INSERT INTO `files` (`id`, `name`, `path`, `public_url`) VALUES (4, '1673871394289-loc-4p.jpg', 'lavandes/locations', 'https://lavandes.s3.eu-west-3.amazonaws.com/locations/1673871394289-loc-4p.jpg');
 INSERT INTO `files` (`id`, `name`, `path`, `public_url`) VALUES (5, '1673871473653-loc-6p.jpg', 'lavandes/locations', 'https://lavandes.s3.eu-west-3.amazonaws.com/locations/1673871473653-loc-6p.jpg');
-
 
 INSERT INTO `locations` (`id`, `air_conditioner`, `barbecue`, `bedrooms`, `description`, `heater`, `kitchen`, `max_persons`, `name`, `parking`, `price_per_night`, `sanitary`, `slot_remaining`, `stripe_product_id`, `surface`, `terrace`, `wifi`, `image_id`) VALUES (1, b'1', b'1', 2, 'Parfaitement aménagés, ils se composent de 2 chambres, un coin cuisine, un espace séjour, une salle de bain ainsi qu’une terrasse couverte. Pour vous réserver le meilleur accueil possible, tous nos lits sont faits avant votre arrivée.', b'1', b'1', 5, 'Mobil home Genêt', b'1', 115, b'1', 25, 'prod_N48O931x0Wiq1g', 30, b'1', b'1', 3);
 INSERT INTO `locations` (`id`, `air_conditioner`, `barbecue`, `bedrooms`, `description`, `heater`, `kitchen`, `max_persons`, `name`, `parking`, `price_per_night`, `sanitary`, `slot_remaining`, `stripe_product_id`, `surface`, `terrace`, `wifi`, `image_id`) VALUES (2, b'1', b'1', 2, 'Parfaitement aménagés, ils se composent de 2 chambres, un coin cuisine, un espace séjour, une salle de bain ainsi qu’une terrasse couverte. Pour vous réserver le meilleur accueil possible, tous nos lits sont faits avant votre arrivée.', b'1', b'1', 4, 'Mobil home Azurite', b'1', 100, b'1', 25, 'prod_N48P2HZoVWxcsU', 28, b'1', b'1', 4);
