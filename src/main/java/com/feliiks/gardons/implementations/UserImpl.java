@@ -176,8 +176,8 @@ public class UserImpl implements UserService {
 
         List<ReservationEntity> userReservations = findUserReservations(user.get().getId());
 
-        userRepository.deleteById(id);
         userReservations.forEach(elt -> reservationRepository.deleteById(elt.getId()));
+        userRepository.deleteById(id);
 
         return user;
     }
