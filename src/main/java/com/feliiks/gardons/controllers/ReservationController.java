@@ -87,7 +87,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "Confirm a specific reservation.")
-    @PatchMapping(path = "/{id}/confirm")
+    @PostMapping(path = "/{id}/confirm")
     public ResponseEntity<ConfirmReservationResponse> confirmReservation(@PathVariable("id") Long id, @RequestBody ConfirmReservationRequest confirmReservationRequest) throws BusinessException {
         Optional<ReservationEntity> currentReservation = reservationService.findById(id);
 
@@ -117,6 +117,27 @@ public class ReservationController {
         ReservationEntity reservationToPatch = reservationService.editReservation(currentReservation.get().getId(), patch);
 
         return ResponseEntity.status(200).body(new ConfirmReservationResponse(reservationToPatch, checkoutSession.getUrl()));
+    }
+
+    @Operation(summary = "Complete a specific reservation.")
+    @PostMapping(path = "/{id}/complete")
+    public ResponseEntity<ReservationResponse> completeReservation(@PathVariable("id") Long id, @RequestBody CompleteReservationRequest completeReservationRequest) throws BusinessException {
+        Optional<ReservationEntity> currentReservation = reservationService.findById(id);
+
+        // Check de l'existence de la réservation
+        if (currentReservation.isEmpty()) {
+            String errorMessage = String.format("La réservation '%s' n'existe pas.", id);
+            throw new BusinessException(errorMessage);
+        }
+
+        // Modification du status de la réservation
+        ReservationEntity patch = new ReservationEntity();
+        patch.setStatus(completeReservationRequest.getStatus());
+
+        // Patch de la réservation
+        ReservationEntity reservationToPatch = reservationService.editReservation(currentReservation.get().getId(), patch);
+
+        return ResponseEntity.status(200).body(new ReservationResponse(reservationToPatch));
     }
 
     @Operation(summary = "Delete a specific reservation.")
